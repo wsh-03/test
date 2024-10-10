@@ -1,25 +1,25 @@
 import os
-from comments_abandoned import CommentRemover
 import csv
 from comments import remove_comments
-remove_comment = CommentRemover()
 
 class File:
     def __init__(self):
         self.file_info = []
         self.file_type = ".c"
-        
-    def get_value_for_sort(self, LOD):
-        # Return values tagged with "LOC After Processing" in a list of dictionaries.
-        return LOD['LOC After Processing']
     
     def log_info(self, lod):
-        fieldnames = lod[0].keys()
-        # Log information into a CSV file
-        with open('info.csv', 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames = fieldnames )
-            writer.writeheader()
-            writer.writerows(lod)
+        # Check if the list is not empty
+        if lod: 
+            fieldnames = lod[0].keys()
+            # Log information into a CSV file
+            with open('info.csv', 'w', newline='') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames = fieldnames )
+                writer.writeheader()
+                writer.writerows(lod)
+            print("Fieldnames:", fieldnames)
+        else:
+            print("The list of dictionaries is empty.")
+  
         
     def clean_file(self, path2folder):
         if os.path.isdir(path2folder):
@@ -33,22 +33,22 @@ class File:
                         # Remove comments in the file
                         processed_file = remove_comments(path2file)
 
-                        print("clean code: \n", processed_file)
+                        # print("clean code: \n", processed_file)
                         # Separate the code into individual lines
                         split_by_line = processed_file.split("\n")
                         self.file_info.append({'Path': path2file, 
                                                    'File Name': file,
-                                                   'LOC After Processed': len(split_by_line)})
+                                                   'LOC': len(split_by_line)})
                         
                         # f = open(path2file, "r")
                         # print("Original LOC: ", len(f.readlines()))
                         # print("LOC After Processed", len(split_by_line))
                         
         # Sort the LOC of each file in ascending order
-        self.file_info.sort(key=self.get_value_for_sort)
-        self.log_info(self.file_info)
+        sorted_data = sorted(self.file_info, key=lambda x: x['LOC'])
+        self.log_info(sorted_data)
 
 
-file_clean = File()
-path2folder = "/home/wsh-v22/test/work/exp"
-file_clean.clean_file(path2folder)
+# file_clean = File()
+# path2folder = "/home/e62562sw/linux_kernel/v6.11.1/drivers"
+# file_clean.clean_file(path2folder)

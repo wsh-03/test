@@ -4,21 +4,24 @@ from pathlib import Path
 from check_e import compile_error
 from comments import remove_comments
 
-with open("/home/wsh-v22/test/hello_world/helloworld.c", 'r') as f:
-    c_example = f.read()
 
-with open("/home/wsh-v22/test/hello_world/helloworld.rs", 'r') as f:
-    rs_example = f.read()
-    
-example = f'''
-Linux kernel module in C language: {c_example}\n 
-Linux kernel module in Rust language: {rs_example}
-'''
-
-propmt = f"{example}\n Use the example as guide if provided, translate the target C file to Rust, including only the code and no comments."
-
-file_type = ".c"
 def translate(path2folder, ouput_dir):
+    
+    with open("/home/e62562sw/test-case-example/hello_world/helloworld.c", 'r') as f:
+        c_example = f.read()
+
+    with open("/home/e62562sw/test-case-example/hello_world/helloworld.rs", 'r') as f:
+        rs_example = f.read()
+    
+    c_example = ""
+    rs_example = ""
+    
+    example = f'''
+        Linux kernel module in C language: {c_example}\n 
+        Linux kernel module in Rust language: {rs_example}
+        '''
+    file_type = ".c"
+    
     if (os.path.isdir(path2folder) and os.path.isdir(ouput_dir)):
         print(f"\nPath checked successfully\n")
         for dir, subdirs, files in os.walk(path2folder):
@@ -41,7 +44,8 @@ def translate(path2folder, ouput_dir):
                             file_content = f.read()
                             
                         # Get response from GPT
-                        response = prompt2gpt(file_content, propmt)
+                        propmt = f"A simple Hello World example: {example}\n Provided file: {file_content}\n Provided C file is related to a Linux kernel driver located in the PCI directory. Please translate it from C to Rust, including only the Rust code without any comments."
+                        response = prompt2gpt(propmt)
                         
                         # Remove comments
                         clean_code = remove_comments(response)
@@ -60,11 +64,6 @@ def translate(path2folder, ouput_dir):
                         print(f"new file path: {new_file_path}")
                         rename_path = file_path.rename(new_file_path)
                         
-                        # Checking for compilation errors
-                        # if compile_error(new_file_path) == "":
-                        #     print(f"Compilation Completed: Translation from '{file_path.name}' to '{rename_path.name}'")
-                        # else:
-                        #     print(f"Error occurred when Compiling '{file_path.name}' to '{rename_path.name}'")
                         
                     else:
                         pass
@@ -74,7 +73,7 @@ def translate(path2folder, ouput_dir):
     else:
         return f"{path2folder} or {ouput_dir} incorrect"
 
-path2folder = "/home/wsh-v22/test/hello_world"
-ouput_path = "/home/wsh-v22/test/work/exp/"
-translate(path2folder,ouput_path)
+path2folder = "/home/e62562sw/test/exp/c_file"
+ouput_path = "/home/e62562sw/test/exp/rs_file"
+print (translate(path2folder,ouput_path))
 
