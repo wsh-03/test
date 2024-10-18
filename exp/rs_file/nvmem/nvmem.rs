@@ -1,8 +1,5 @@
 // Necessary imports from Rust's kernel module abstractions
-use kernel::prelude::*;
-use kernel::device::Device;
-use kernel::nvmem::{self, NvmemConfig, NvmemDevice};
-use kernel::rtc::RtcDevice;
+extern crate wrapper;
 
 pub fn devm_rtc_nvmem_register(rtc: &RtcDevice, nvmem_config: &mut NvmemConfig) -> Result<(), Error> {
     let dev = rtc.dev().parent; // Getting the parent device from RTC device

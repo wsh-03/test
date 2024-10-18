@@ -1,0 +1,279 @@
+In file included from headers.c:1:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:5:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler.h:314:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/asm/rwonce.h:1:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/rwonce.h:27:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kcsan-checks.h:13:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler_attributes.h:55:9: warning: '__always_inline' macro redefined [-Wmacro-redefined]
+   55 | #define __always_inline                 inline __attribute__((__always_inline__))
+      |         ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/uapi/linux/stddef.h:8:9: note: previous definition is here
+    8 | #define __always_inline inline
+      |         ^
+In file included from headers.c:1:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:5:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler.h:314:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/asm/rwonce.h:1:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/rwonce.h:27:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kcsan-checks.h:13:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler_attributes.h:105:10: warning: '__counted_by' macro redefined [-Wmacro-redefined]
+  105 | # define __counted_by(member)           __attribute__((__counted_by__(member)))
+      |          ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/uapi/linux/stddef.h:55:9: note: previous definition is here
+   55 | #define __counted_by(m)
+      |         ^
+In file included from headers.c:1:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:5:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler.h:314:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/asm/rwonce.h:1:
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/rwonce.h:64:8: error: unknown type name '__no_sanitize_or_inline'
+   64 | static __no_sanitize_or_inline
+      |        ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/rwonce.h:82:8: error: unknown type name '__no_kasan_or_inline'
+   82 | static __no_kasan_or_inline
+      |        ^
+In file included from headers.c:1:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:61:9: error: call to undeclared function 'unlikely'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   61 |         return IS_ERR_VALUE((unsigned long)ptr);
+      |                ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:28:25: note: expanded from macro 'IS_ERR_VALUE'
+   28 | #define IS_ERR_VALUE(x) unlikely((unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO)
+      |                         ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/err.h:72:9: error: call to undeclared function 'unlikely'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   72 |         return unlikely(!ptr) || IS_ERR_VALUE((unsigned long)ptr);
+      |                ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:14:
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/current.h:38:1: error: use of undeclared identifier 'CONFIG_X86_L1_CACHE_SHIFT'
+   38 | DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/percpu-defs.h:148:2: note: expanded from macro 'DECLARE_PER_CPU_ALIGNED'
+  148 |         ____cacheline_aligned
+      |         ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/cache.h:67:58: note: expanded from macro '____cacheline_aligned'
+   67 | #define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
+      |                                                          ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/cache.h:13:25: note: expanded from macro 'SMP_CACHE_BYTES'
+   13 | #define SMP_CACHE_BYTES L1_CACHE_BYTES
+      |                         ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/cache.h:9:30: note: expanded from macro 'L1_CACHE_BYTES'
+    9 | #define L1_CACHE_BYTES  (1 << L1_CACHE_SHIFT)
+      |                               ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/cache.h:8:25: note: expanded from macro 'L1_CACHE_SHIFT'
+    8 | #define L1_CACHE_SHIFT  (CONFIG_X86_L1_CACHE_SHIFT)
+      |                          ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:14:
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/current.h:41:1: error: use of undeclared identifier 'CONFIG_X86_L1_CACHE_SHIFT'
+   41 | DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/percpu-defs.h:148:2: note: expanded from macro 'DECLARE_PER_CPU_ALIGNED'
+  148 |         ____cacheline_aligned
+      |         ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/cache.h:67:58: note: expanded from macro '____cacheline_aligned'
+   67 | #define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
+      |                                                          ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/cache.h:13:25: note: expanded from macro 'SMP_CACHE_BYTES'
+   13 | #define SMP_CACHE_BYTES L1_CACHE_BYTES
+      |                         ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/cache.h:9:30: note: expanded from macro 'L1_CACHE_BYTES'
+    9 | #define L1_CACHE_BYTES  (1 << L1_CACHE_SHIFT)
+      |                               ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/cache.h:8:25: note: expanded from macro 'L1_CACHE_SHIFT'
+    8 | #define L1_CACHE_SHIFT  (CONFIG_X86_L1_CACHE_SHIFT)
+      |                          ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:14:
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/current.h:46:6: error: call to undeclared function 'IS_ENABLED'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   46 |         if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
+      |             ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/current.h:46:17: error: use of undeclared identifier 'CONFIG_USE_X86_SEG_SUPPORT'
+   46 |         if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
+      |                        ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:15:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/list.h:391:2: error: call to undeclared function 'barrier'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  391 |         smp_store_release(&entry->next, entry);
+      |         ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/barrier.h:196:2: note: expanded from macro 'smp_store_release'
+  196 |         barrier();                                                      \
+      |         ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:15:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/list.h:409:27: error: call to undeclared function 'barrier'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  409 |         struct list_head *next = smp_load_acquire(&head->next);
+      |                                  ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/barrier.h:205:2: note: expanded from macro 'smp_load_acquire'
+  205 |         barrier();                                                      \
+      |         ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:29:
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/bitops/generic-non-atomic.h:140:16: error: call to undeclared function 'barrier'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+  140 |         return 1UL & (smp_load_acquire(p) >> (nr & (BITS_PER_LONG-1)));
+      |                       ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/asm-generic/barrier.h:205:2: note: expanded from macro 'smp_load_acquire'
+  205 |         barrier();                                                      \
+      |         ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:68:
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/bitops.h:87:2: error: call to undeclared function 'barrier'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   87 |         barrier();
+      |         ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:76:1: error: use of undeclared identifier '___set_bit'; did you mean 'arch_set_bit'?
+   76 | __check_bitop_pr(__set_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:140:1: note: expanded from here
+  140 | ___set_bit
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/asm/bitops.h:52:1: note: 'arch_set_bit' declared here
+   52 | arch_set_bit(long nr, volatile unsigned long *addr)
+      | ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:76:1: error: static assertion failed due to requirement '__builtin_types_compatible_p(void (long, volatile unsigned long *), void (unsigned long, volatile unsigned long *))': __same_type(arch___set_bit, generic___set_bit) && __same_type(const___set_bit, generic___set_bit) && __same_type(___set_bit, generic___set_bit)
+   76 | __check_bitop_pr(__set_bit);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:9: note: expanded from macro '__check_bitop_pr'
+   72 |         static_assert(__same_type(arch_##name, generic_##name) &&       \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   73 |                       __same_type(const_##name, generic_##name) &&      \
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   74 |                       __same_type(_##name, generic_##name))
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler_types.h:451:27: note: expanded from macro '__same_type'
+  451 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+      |                           ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/build_bug.h:77:50: note: expanded from macro 'static_assert'
+   77 | #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
+      |                                  ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/build_bug.h:78:56: note: expanded from macro '__static_assert'
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:77:1: error: use of undeclared identifier '___clear_bit'
+   77 | __check_bitop_pr(__clear_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:147:1: note: expanded from here
+  147 | ___clear_bit
+      | ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:78:1: error: use of undeclared identifier '___change_bit'
+   78 | __check_bitop_pr(__change_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:154:1: note: expanded from here
+  154 | ___change_bit
+      | ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:79:1: error: use of undeclared identifier '___test_and_set_bit'
+   79 | __check_bitop_pr(__test_and_set_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:161:1: note: expanded from here
+  161 | ___test_and_set_bit
+      | ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:80:1: error: use of undeclared identifier '___test_and_clear_bit'
+   80 | __check_bitop_pr(__test_and_clear_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:168:1: note: expanded from here
+  168 | ___test_and_clear_bit
+      | ^
+In file included from headers.c:3:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/nvmem-consumer.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/notifier.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/mutex.h:17:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/lockdep.h:14:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/smp.h:13:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/cpumask.h:11:
+In file included from /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kernel.h:23:
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:81:1: error: use of undeclared identifier '___test_and_change_bit'
+   81 | __check_bitop_pr(__test_and_change_bit);
+      | ^
+/usr/src/linux-headers-6.11.0-061100-generic/include/linux/bitops.h:74:21: note: expanded from macro '__check_bitop_pr'
+   74 |                       __same_type(_##name, generic_##name))
+      |                                   ^
+<scratch space>:175:1: note: expanded from here
+  175 | ___test_and_change_bit
+      | ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+2 warnings and 20 errors generated.
