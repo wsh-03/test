@@ -1,2 +1,5 @@
 [build-dependencies]
 bindgen = "*"
+
+[package]
+build = "build.rs"
