@@ -3,10 +3,20 @@
 -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include 
 -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated  
 -I/usr/src/linux-headers-6.11.0-061100-generic/include 
--I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/uapi -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/uapi 
+-I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/uapi 
+-I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/uapi 
 -I/usr/src/linux-headers-6.11.0-061100-generic/include/uapi 
 -I/usr/src/linux-headers-6.11.0-061100-generic/include/generated/uapi
 -D__KERNEL__
+
+bindgen wrapper.h -o wrapper.rs -- \
+    -I/usr/src/linux-headers-$(uname -r)/arch/x86/include \
+    -I/usr/src/linux-headers-$(uname -r)/arch/x86/include/generated \
+    -I/usr/src/linux-headers-$(uname -r)/include \
+    -I/usr/src/linux-headers-$(uname -r)/include/linux \
+    -D__KERNEL__ \
+    -target x86_64-unknown-linux-gnu
+
 
 bindgen wrapper.h -o wrapper.rs -- \
     -I/usr/src/linux-headers-$(uname -r)/arch/x86/include \
@@ -19,7 +29,8 @@ bindgen wrapper.h -o wrapper.rs -- \
     -include /usr/src/linux-headers-$(uname -r)/include/linux/compiler-version.h \
     -include /usr/src/linux-headers-$(uname -r)/include/linux/kconfig.h \
     -include /usr/src/linux-headers-$(uname -r)/include/linux/compiler_types.h \
-    -D__KERNEL__
+    -D__KERNEL__ \
+    -target x86_64-unknown-linux-gnu
 
 
 

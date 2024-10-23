@@ -3,3 +3,4 @@ bindgen = "*"
 
 [package]
 build = "build.rs"
+name = "bindgen-nvmem"
