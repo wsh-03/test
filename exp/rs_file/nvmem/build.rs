@@ -13,6 +13,7 @@ fn main() {
         .clang_arg("I/usr/src/linux-headers-$(uname -r)/arch/x86/include/generated")
         .clang_arg("I/usr/src/linux-headers-$(uname -r)/include/generated")
         .clang_arg("I/usr/src/linux-headers-$(uname -r)/include/linux")
+        .clang_arg("I/usr/src/linux-headers-$(uname -r)/include")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
