@@ -1,31 +1,34 @@
-// Necessary imports from Rust's kernel module abstractions
-extern crate wrapper;
+use crate::wrapper::*; // Assuming FFIs are in wrapper.rs
 
-pub fn devm_rtc_nvmem_register(rtc: &RtcDevice, nvmem_config: &mut NvmemConfig) -> Result<(), Error> {
-    let dev = rtc.dev().parent; // Getting the parent device from RTC device
-    let nvmem: Option<NvmemDevice>;
+pub unsafe extern "C" fn devm_rtc_nvmem_register(
+    rtc: *mut rtc_device,
+    nvmem_config: *mut nvmem_config,
+) -> i32 {
+    // Get the parent device from rtc
+    let dev = if rtc.is_null() {
+        return ENODEV; // Use the constant from wrapper.rs      
+    } else {
+        (*(*rtc).dev).parent
+    };
 
-    // Return error if nvmem_config is null
-    if nvmem_config.is_none() {
-        return Err(Error::new(ENODEV));
+    // Check if nvmem_config is null
+    if nvmem_config.is_null() {
+        return ENODEV; // Use the constant from wrapper.rs     
     }
 
-    // Set up nvmem_config with appropriate device and owner values
-    nvmem_config.dev = Some(dev);
-    nvmem_config.owner = rtc.owner;
-    nvmem_config.add_legacy_fixed_of_cells = true;
+    // Set fields in nvmem_config
+    (*nvmem_config).dev = dev;
+    (*nvmem_config).owner = (*rtc).owner;
+    (*nvmem_config).add_legacy_fixed_of_cells = true;
 
-    // Register the nvmem device
-    nvmem = nvmem::register(dev, nvmem_config)?;
-
-    if let Err(err) = nvmem {
-        dev.err("Failed to register nvmem device for RTC\n");
-        return Err(err);
+    // Call the FFI function `devm_nvmem_register`
+    let nvmem = devm_nvmem_register(dev, nvmem_config);
+    
+    // Handle the result of the nvmem registration
+    if IS_ERR(nvmem) {
+        dev_err(dev, "failed to register nvmem device for RTC\n\0".as_ptr() as *const i8);
+        return PTR_ERR_OR_ZERO(nvmem);
     }
 
-    // Return success or propagate the error based on the result of the nvmem registration
-    Ok(())
+    PTR_ERR_OR_ZERO(nvmem)
 }
-
-// Export the symbol so it's available to other kernel modules
-kernel::module::export_symbol!(devm_rtc_nvmem_register);

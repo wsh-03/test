@@ -1,6 +1,7 @@
 [build-dependencies]
-bindgen = "*"
+bindgen = "0.70.1"
 
 [package]
 build = "build.rs"
 name = "bindgen-nvmem"
+edition = "2021"

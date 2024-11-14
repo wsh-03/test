@@ -1,0 +1,199 @@
+mkdir -p /home/wsh/rust4linux/linux/tools/objtool && make O=/home/wsh/rust4linux/linux subdir=tools/objtool --no-print-directory -C objtool 
+  INSTALL libsubcmd_headers
+  CALL    scripts/checksyscalls.sh
+  RUSTC     drivers/rtc/nvmem.o
+  CC      drivers/rtc/dev.o
+error[E0308]: mismatched types
+  --> drivers/rtc/nvmem.rs:10:16
+   |
+7  | ) -> i32 {
+   |      --- expected `i32` because of return type
+...
+10 |         return ENODEV;       
+   |                ^^^^^^ expected `i32`, found `Error`
+
+error[E0614]: type `kernel::bindings::device` cannot be dereferenced
+  --> drivers/rtc/nvmem.rs:12:9
+   |
+12 |         (*(*rtc).dev).parent
+   |         ^^^^^^^^^^^^^
+
+error[E0308]: mismatched types
+  --> drivers/rtc/nvmem.rs:29:15
+   |
+29 |     if IS_ERR(nvmem) {
+   |        ------ ^^^^^ expected `*const c_void`, found `*mut nvmem_device`
+   |        |
+   |        arguments to this function are incorrect
+   |
+   = note: expected raw pointer `*const c_void`
+              found raw pointer `*mut nvmem_device`
+note: function defined here
+  --> /home/wsh/rust4linux/linux/rust/bindings/bindings_helpers_generated.rs:25:12
+   |
+25 |     pub fn IS_ERR(ptr: *const core::ffi::c_void) -> bool_;
+   |            ^^^^^^
+
+error[E0425]: cannot find function `dev_err` in this scope
+     --> drivers/rtc/nvmem.rs:30:9
+      |
+30    |         dev_err(dev, "failed to register nvmem device for RTC\n\0".as_ptr() as *const i8);
+      |         ^^^^^^^
+      |
+     ::: /home/wsh/rust4linux/linux/rust/bindings/bindings_generated.rs:44172:5
+      |
+44172 |     pub fn _dev_err(dev: *const device, fmt: *const core::ffi::c_char, ...);
+      |     ------------------------------------------------------------------------ similarly named function `_dev_err` defined here
+      |
+help: the leading underscore in `_dev_err` marks it as unused, consider renaming it to `dev_err`
+     -->   /home/wsh/rust4linux/linux/rust/bindings/bindings_generated.rs:44172:12
+      |
+44172 |     pub fn dev_err(dev: *const device, fmt: *const core::ffi::c_char, ...);
+      |            ~~~~~~~
+
+error[E0425]: cannot find function, tuple struct or tuple variant `PTR_ERR_OR_ZERO` in this scope
+  --> drivers/rtc/nvmem.rs:31:16
+   |
+31 |         return PTR_ERR_OR_ZERO(nvmem);
+   |                ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `PTR_ERR_OR_ZERO` in this scope
+  --> drivers/rtc/nvmem.rs:34:5
+   |
+34 |     PTR_ERR_OR_ZERO(nvmem)
+   |     ^^^^^^^^^^^^^^^ not found in this scope
+
+error: aborting due to 6 previous errors
+
+Some errors have detailed explanations: E0308, E0425, E0614.
+For more information about an error, try `rustc --explain E0308`.
+make[4]: *** [scripts/Makefile.build:284: drivers/rtc/nvmem.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+  AR      drivers/i3c/built-in.a
+  AR      drivers/media/i2c/built-in.a
+  AR      drivers/media/tuners/built-in.a
+  AR      drivers/media/rc/keymaps/built-in.a
+  AR      drivers/media/rc/built-in.a
+  AR      drivers/media/common/b2c2/built-in.a
+  AR      drivers/pps/clients/built-in.a
+  AR      drivers/media/common/saa7146/built-in.a
+  AR      drivers/pps/generators/built-in.a
+  AR      drivers/media/common/siano/built-in.a
+  CC      drivers/pps/pps.o
+  AR      drivers/media/common/v4l2-tpg/built-in.a
+make[3]: *** [scripts/Makefile.build:478: drivers/rtc] Error 2
+make[3]: *** Waiting for unfinished jobs....
+  AR      drivers/media/common/videobuf2/built-in.a
+  AR      drivers/media/common/built-in.a
+  AR      drivers/media/platform/allegro-dvt/built-in.a
+  AR      drivers/media/pci/ttpci/built-in.a
+  AR      drivers/media/platform/amlogic/meson-ge2d/built-in.a
+  AR      drivers/media/pci/b2c2/built-in.a
+  AR      drivers/media/platform/amlogic/built-in.a
+  AR      drivers/media/pci/pluto2/built-in.a
+  AR      drivers/media/platform/amphion/built-in.a
+  AR      drivers/media/pci/dm1105/built-in.a
+  AR      drivers/media/platform/aspeed/built-in.a
+  AR      drivers/media/platform/atmel/built-in.a
+  AR      drivers/media/pci/pt1/built-in.a
+  AR      drivers/media/platform/broadcom/built-in.a
+  AR      drivers/media/pci/pt3/built-in.a
+  AR      drivers/media/pci/mantis/built-in.a
+  AR      drivers/media/platform/cadence/built-in.a
+  AR      drivers/media/pci/ngene/built-in.a
+  AR      drivers/media/pci/ddbridge/built-in.a
+  AR      drivers/media/platform/chips-media/coda/built-in.a
+  AR      drivers/media/pci/saa7146/built-in.a
+  AR      drivers/media/platform/chips-media/wave5/built-in.a
+  AR      drivers/media/pci/smipcie/built-in.a
+  AR      drivers/media/platform/chips-media/built-in.a
+  AR      drivers/media/pci/netup_unidvb/built-in.a
+  AR      drivers/media/platform/imagination/built-in.a
+  AR      drivers/media/pci/intel/ipu3/built-in.a
+  AR      drivers/media/pci/intel/ivsc/built-in.a
+  AR      drivers/media/platform/intel/built-in.a
+  AR      drivers/media/platform/marvell/built-in.a
+  AR      drivers/media/pci/intel/built-in.a
+  CC      drivers/pps/kapi.o
+  AR      drivers/media/pci/built-in.a
+  AR      drivers/media/platform/mediatek/jpeg/built-in.a
+  AR      drivers/media/platform/mediatek/mdp/built-in.a
+  AR      drivers/media/platform/mediatek/vcodec/common/built-in.a
+  AR      drivers/media/platform/mediatek/vcodec/encoder/built-in.a
+  AR      drivers/media/platform/mediatek/vcodec/decoder/built-in.a
+  AR      drivers/media/platform/mediatek/vcodec/built-in.a
+  CC      drivers/pps/sysfs.o
+  AR      drivers/media/platform/mediatek/vpu/built-in.a
+  AR      drivers/media/platform/mediatek/mdp3/built-in.a
+  AR      drivers/media/platform/mediatek/built-in.a
+  AR      drivers/media/platform/microchip/built-in.a
+  AR      drivers/media/platform/nuvoton/built-in.a
+  AR      drivers/media/usb/b2c2/built-in.a
+  AR      drivers/media/platform/nvidia/tegra-vde/built-in.a
+  AR      drivers/media/usb/dvb-usb/built-in.a
+  AR      drivers/media/usb/dvb-usb-v2/built-in.a
+  AR      drivers/media/platform/nvidia/built-in.a
+  AR      drivers/media/usb/s2255/built-in.a
+  AR      drivers/media/platform/nxp/dw100/built-in.a
+  AR      drivers/media/usb/siano/built-in.a
+  AR      drivers/media/platform/nxp/imx-jpeg/built-in.a
+  AR      drivers/media/platform/nxp/imx8-isi/built-in.a
+  AR      drivers/media/platform/nxp/built-in.a
+  AR      drivers/media/usb/ttusb-budget/built-in.a
+  AR      drivers/media/platform/qcom/camss/built-in.a
+  AR      drivers/media/usb/ttusb-dec/built-in.a
+  AR      drivers/media/usb/built-in.a
+  AR      drivers/media/platform/qcom/venus/built-in.a
+  AR      drivers/media/platform/raspberrypi/pisp_be/built-in.a
+  AR      drivers/media/platform/renesas/rcar-vin/built-in.a
+  AR      drivers/media/platform/qcom/built-in.a
+  AR      drivers/media/platform/raspberrypi/built-in.a
+  AR      drivers/media/platform/renesas/rzg2l-cru/built-in.a
+  AR      drivers/media/platform/renesas/vsp1/built-in.a
+  AR      drivers/media/platform/rockchip/rga/built-in.a
+  AR      drivers/media/platform/rockchip/rkisp1/built-in.a
+  AR      drivers/media/platform/renesas/built-in.a
+  AR      drivers/media/platform/rockchip/built-in.a
+  AR      drivers/media/mmc/siano/built-in.a
+  AR      drivers/media/platform/samsung/exynos-gsc/built-in.a
+  AR      drivers/media/mmc/built-in.a
+  AR      drivers/media/firewire/built-in.a
+  AR      drivers/media/platform/st/sti/bdisp/built-in.a
+  AR      drivers/media/platform/samsung/exynos4-is/built-in.a
+  AR      drivers/media/platform/samsung/s3c-camif/built-in.a
+  AR      drivers/media/platform/st/sti/c8sectpfe/built-in.a
+  AR      drivers/media/platform/samsung/s5p-g2d/built-in.a
+  AR      drivers/media/platform/st/sti/delta/built-in.a
+  AR      drivers/media/platform/samsung/s5p-jpeg/built-in.a
+  AR      drivers/media/platform/st/sti/hva/built-in.a
+  AR      drivers/media/platform/st/stm32/built-in.a
+  AR      drivers/media/platform/samsung/s5p-mfc/built-in.a
+  AR      drivers/media/platform/st/built-in.a
+  AR      drivers/media/platform/samsung/built-in.a
+  AR      drivers/pps/built-in.a
+  AR      drivers/media/spi/built-in.a
+  AR      drivers/media/platform/sunxi/sun4i-csi/built-in.a
+  AR      drivers/media/platform/sunxi/sun6i-csi/built-in.a
+  AR      drivers/media/platform/sunxi/sun6i-mipi-csi2/built-in.a
+  AR      drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/built-in.a
+  AR      drivers/media/platform/sunxi/sun8i-di/built-in.a
+  AR      drivers/media/test-drivers/built-in.a
+  AR      drivers/media/platform/sunxi/sun8i-rotate/built-in.a
+  AR      drivers/media/platform/sunxi/built-in.a
+  AR      drivers/media/platform/ti/am437x/built-in.a
+  AR      drivers/media/platform/ti/cal/built-in.a
+  AR      drivers/media/platform/ti/vpe/built-in.a
+  AR      drivers/media/platform/verisilicon/built-in.a
+  AR      drivers/media/platform/ti/davinci/built-in.a
+  AR      drivers/media/platform/ti/j721e-csi2rx/built-in.a
+  AR      drivers/media/platform/ti/omap/built-in.a
+  AR      drivers/media/platform/ti/omap3isp/built-in.a
+  AR      drivers/media/platform/via/built-in.a
+  AR      drivers/media/platform/ti/built-in.a
+  AR      drivers/media/platform/xilinx/built-in.a
+  AR      drivers/media/platform/built-in.a
+  AR      drivers/media/built-in.a
+make[2]: *** [scripts/Makefile.build:478: drivers] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/home/wsh/rust4linux/linux/Makefile:1943: .] Error 2
+make: *** [Makefile:224: __sub-make] Error 2

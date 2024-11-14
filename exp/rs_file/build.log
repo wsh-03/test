@@ -1,0 +1,164 @@
+wsh@wsh-VMware-Virtual-Platform:~/rust4linux/linux$ make LLVM=1 -j$(nproc)
+mkdir -p /home/wsh/rust4linux/linux/tools/objtool && make O=/home/wsh/rust4linux/linux subdir=tools/objtool --no-print-directory -C objtool 
+  INSTALL libsubcmd_headers
+  CALL    scripts/checksyscalls.sh
+  RUSTC     drivers/rtc/nvmem.o
+  AR      drivers/ufs/built-in.a
+  CC      drivers/rtc/rtc-cmos.o
+  AR      drivers/firmware/arm_ffa/built-in.a
+  AR      drivers/firmware/arm_scmi/built-in.a
+error[E0573]: expected type, found local variable `nvmem_config`
+     --> drivers/rtc/nvmem.rs:6:24
+      |
+6     |     nvmem_config: *mut nvmem_config,
+      |                        ^^^^^^^^^^^^ help: a struct with a similar name exists: `eee_config`
+      |
+     ::: /home/wsh/rust4linux/linux/rust/bindings/bindings_generated.rs:74037:1
+      |
+74037 | pub struct eee_config {
+      | --------------------- similarly named struct `eee_config` defined here
+
+error[E0609]: no field `dev` on type `kernel::bindings::rtc_device`
+  --> drivers/rtc/nvmem.rs:12:18
+   |
+12 |         (*(*rtc).dev).parent
+   |                  ^^^ unknown field
+
+error[E0308]: mismatched types
+  --> drivers/rtc/nvmem.rs:17:16
+   |
+7  | ) -> i32 {
+   |      --- expected `i32` because of return type
+...
+17 |         return ENODEV; // Use the constant from wrapper.rs
+   |                ^^^^^^ expected `i32`, found `u32`
+   |
+help: you can convert a `u32` to an `i32` and panic if the converted value doesn't fit
+   |
+17 |         return ENODEV.try_into().unwrap(); // Use the constant from wrapper.rs
+   |                      ++++++++++++++++++++
+
+error[E0609]: no field `owner` on type `kernel::bindings::rtc_device`
+  --> drivers/rtc/nvmem.rs:22:36
+   |
+22 |     (*nvmem_config).owner = (*rtc).owner;
+   |                                    ^^^^^ unknown field
+
+error[E0425]: cannot find function `devm_nvmem_register` in this scope
+  --> drivers/rtc/nvmem.rs:26:17
+   |
+26 |     let nvmem = devm_nvmem_register(dev, nvmem_config);
+   |                 ^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `dev_err` in this scope
+     --> drivers/rtc/nvmem.rs:30:9
+      |
+30    |         dev_err(dev, "failed to register nvmem device for RTC\n\0".as_ptr() as *const i8);
+      |         ^^^^^^^
+      |
+     ::: /home/wsh/rust4linux/linux/rust/bindings/bindings_generated.rs:44135:5
+      |
+44135 |     pub fn _dev_err(dev: *const device, fmt: *const core::ffi::c_char, ...);
+      |     ------------------------------------------------------------------------ similarly named function `_dev_err` defined here
+      |
+help: the leading underscore in `_dev_err` marks it as unused, consider renaming it to `dev_err`
+     -->   /home/wsh/rust4linux/linux/rust/bindings/bindings_generated.rs:44135:12
+      |
+44135 |     pub fn dev_err(dev: *const device, fmt: *const core::ffi::c_char, ...);
+      |            ~~~~~~~
+
+error[E0425]: cannot find function, tuple struct or tuple variant `PTR_ERR_OR_ZERO` in this scope
+  --> drivers/rtc/nvmem.rs:31:16
+   |
+31 |         return PTR_ERR_OR_ZERO(nvmem);
+   |                ^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `PTR_ERR_OR_ZERO` in this scope
+  --> drivers/rtc/nvmem.rs:34:5
+   |
+34 |     PTR_ERR_OR_ZERO(nvmem)
+   |     ^^^^^^^^^^^^^^^ not found in this scope
+
+error: aborting due to 8 previous errors
+
+Some errors have detailed explanations: E0308, E0425, E0573, E0609.
+For more information about an error, try `rustc --explain E0308`.
+  AR      drivers/firmware/broadcom/built-in.a
+make[4]: *** [scripts/Makefile.build:284: drivers/rtc/nvmem.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+  AR      drivers/firmware/cirrus/built-in.a
+  AR      drivers/firmware/meson/built-in.a
+  AR      drivers/firmware/microchip/built-in.a
+  CC      drivers/firmware/efi/libstub/efi-stub-helper.o
+  AR      drivers/crypto/stm32/built-in.a
+  AR      drivers/crypto/xilinx/built-in.a
+  AR      drivers/firmware/imx/built-in.a
+  CC      drivers/firmware/efi/efi-bgrt.o
+  AR      drivers/crypto/hisilicon/built-in.a
+  AR      drivers/crypto/intel/keembay/built-in.a
+  AR      drivers/crypto/intel/ixp4xx/built-in.a
+  AR      drivers/crypto/intel/built-in.a
+  AR      drivers/crypto/starfive/built-in.a
+  AR      drivers/crypto/built-in.a
+  CC      drivers/firmware/efi/efi.o
+make[3]: *** [scripts/Makefile.build:478: drivers/rtc] Error 2
+  CC      drivers/firmware/efi/vars.o
+make[3]: *** Waiting for unfinished jobs....
+  CC      drivers/firmware/efi/libstub/gop.o
+  AR      drivers/firmware/psci/built-in.a
+  CC      drivers/firmware/efi/libstub/secureboot.o
+  CC      drivers/firmware/efi/libstub/tpm.o
+  AR      drivers/firmware/qcom/built-in.a
+  CC      drivers/firmware/efi/libstub/file.o
+  AR      drivers/firmware/smccc/built-in.a
+  CC      drivers/firmware/efi/reboot.o
+  CC      drivers/firmware/efi/libstub/mem.o
+  CC      drivers/firmware/efi/memattr.o
+  AR      drivers/firmware/tegra/built-in.a
+  CC      drivers/firmware/efi/libstub/random.o
+  CC      drivers/firmware/efi/libstub/randomalloc.o
+  AR      drivers/firmware/xilinx/built-in.a
+  CC      drivers/firmware/efi/tpm.o
+  CC      drivers/firmware/efi/libstub/pci.o
+  CC      drivers/firmware/efi/memmap.o
+  CC      drivers/firmware/dmi_scan.o
+  CC      drivers/firmware/dmi-id.o
+  CC      drivers/firmware/efi/esrt.o
+  CC      drivers/firmware/efi/libstub/skip_spaces.o
+  CC      drivers/firmware/memmap.o
+  CC      drivers/firmware/efi/libstub/lib-cmdline.o
+  CC      drivers/firmware/efi/libstub/lib-ctype.o
+  CC      drivers/firmware/efi/libstub/alignedmem.o
+  CC      drivers/firmware/efi/libstub/relocate.o
+  CC      drivers/firmware/efi/libstub/printk.o
+  CC      drivers/firmware/efi/runtime-wrappers.o
+  CC      drivers/firmware/efi/earlycon.o
+  CC      drivers/firmware/efi/libstub/vsprintf.o
+  CC      drivers/firmware/efi/libstub/x86-stub.o
+  CC      drivers/firmware/efi/libstub/smbios.o
+  CC      drivers/firmware/efi/libstub/x86-5lvl.o
+  STUBCPY drivers/firmware/efi/libstub/alignedmem.stub.o
+  STUBCPY drivers/firmware/efi/libstub/efi-stub-helper.stub.o
+  STUBCPY drivers/firmware/efi/libstub/file.stub.o
+  STUBCPY drivers/firmware/efi/libstub/gop.stub.o
+  AR      drivers/firmware/efi/built-in.a
+  STUBCPY drivers/firmware/efi/libstub/lib-cmdline.stub.o
+  STUBCPY drivers/firmware/efi/libstub/lib-ctype.stub.o
+  STUBCPY drivers/firmware/efi/libstub/mem.stub.o
+  STUBCPY drivers/firmware/efi/libstub/pci.stub.o
+  STUBCPY drivers/firmware/efi/libstub/printk.stub.o
+  STUBCPY drivers/firmware/efi/libstub/random.stub.o
+  STUBCPY drivers/firmware/efi/libstub/randomalloc.stub.o
+  STUBCPY drivers/firmware/efi/libstub/relocate.stub.o
+  STUBCPY drivers/firmware/efi/libstub/secureboot.stub.o
+  STUBCPY drivers/firmware/efi/libstub/skip_spaces.stub.o
+  STUBCPY drivers/firmware/efi/libstub/smbios.stub.o
+  STUBCPY drivers/firmware/efi/libstub/tpm.stub.o
+  STUBCPY drivers/firmware/efi/libstub/vsprintf.stub.o
+  STUBCPY drivers/firmware/efi/libstub/x86-stub.stub.o
+  STUBCPY drivers/firmware/efi/libstub/x86-5lvl.stub.o
+  AR      drivers/firmware/efi/libstub/lib.a
+  AR      drivers/firmware/built-in.a
+make[2]: *** [scripts/Makefile.build:478: drivers] Error 2
+make[1]: *** [/home/wsh/rust4linux/linux/Makefile:1943: .] Error 2
+make: *** [Makefile:224: __sub-make] Error 2
