@@ -4,6 +4,7 @@ use std::path::PathBuf;
 fn main() {
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
+<<<<<<< Updated upstream
         // Include kernel headers
         .clang_arg("-I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include")
         .clang_arg("-I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated")
@@ -22,6 +23,17 @@ fn main() {
         .clang_arg("-target")
         .clang_arg("x86_64-unknown-linux-gnu")
         // Generate the bindings
+=======
+        .clang_arg("-I/usr/src/linux-headers-6.8.0-45-generic/arch/x86/include")
+        .clang_arg("-I/usr/src/linux-headers-6.8.0-45-generic/arch/x86/include/generated")
+        .clang_arg("-I/usr/src/linux-headers-6.8.0-45-generic/include/generated")
+        .clang_arg("-I/usr/src/linux-headers-6.8.0-45-generic/include/linux")
+        .clang_arg("-I/usr/src/linux-headers-6.8.0-45-generic/include")
+        // Tell cargo to invalidate the built crate whenever any of the
+        // included header files changed.
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        // Finish the builder and generate the bindings.d
+>>>>>>> Stashed changes
         .generate()
         .expect("Unable to generate bindings");
 

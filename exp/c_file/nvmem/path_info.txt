@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h
 
 -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include 
@@ -9,6 +10,32 @@
 -I/usr/src/linux-headers-6.11.0-061100-generic/include/generated/uapi
 -D__KERNEL__
 
+=======
+-I/usr/src/linux-headers-$(uname -r)/arch/x86/include 
+-I/usr/src/linux-headers-$(uname -r)/arch/x86/include/generated  
+-I/usr/src/linux-headers-$(uname -r)/include 
+-I/usr/src/linux-headers-$(uname -r)/arch/x86/include/uapi 
+-I/usr/src/linux-headers-$(uname -r)/arch/x86/include/generated/uapi 
+-I/usr/src/linux-headers-$(uname -r)/include/uapi 
+-I/usr/src/linux-headers-$(uname -r)/include/generated/uapi 
+-include /usr/src/linux-headers-$(uname -r)/include/linux/compiler-version.h
+-D__KERNEL__
+
+bindgen wrapper.h -o bindings.rs -- \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/include \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/uapi \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/arch/x86/include/generated/uapi \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/include/uapi \
+    -I/usr/src/linux-headers-6.11.0-061100-generic/include/generated/uapi \
+    -include /usr/src/linux-headers-6.11.0-061100-generic/include/linux/kconfig.h \
+    -include /usr/src/linux-headers-6.11.0-061100-generic/include/linux/compiler-version.h \
+    -target x86_64-unknown-linux-gnu \
+    -D__KERNEL__ 
+    
+
+>>>>>>> Stashed changes
 bindgen wrapper.h -o wrapper.rs -- \
     -I/usr/src/linux-headers-$(uname -r)/arch/x86/include \
     -I/usr/src/linux-headers-$(uname -r)/arch/x86/include/generated \

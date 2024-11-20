@@ -4,7 +4,7 @@ import os
 from openai import OpenAI
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-model_type= "gpt-4o-mini"
+model_type= "gpt-4o"
 
 response_history = []
 question_history = []
