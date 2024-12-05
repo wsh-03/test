@@ -1,7 +1,7 @@
 import os
 from gpt import prompt2gpt
 from pathlib import Path
-from check_e import compile_error
+from fix_compilation_error import compile_error
 from comments import remove_comments
 
 
