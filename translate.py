@@ -2,7 +2,7 @@ import os
 from gpt import prompt2gpt
 from pathlib import Path
 from fix_compilation_error import compile_error
-from comments import remove_comments
+from files import File
 
 
 def translate(path2folder):
@@ -21,7 +21,6 @@ def translate(path2folder):
     #     Linux kernel module in Rust language: {rs_example}
     #     '''
     file_type = ".c"
-    file_name = ""
     driver_name = "rtc"
     
     if (os.path.isdir(path2folder)):
@@ -29,7 +28,7 @@ def translate(path2folder):
         for dir, subdirs, files in os.walk(path2folder):      
             # print(files)     
             for file in files:
-                outputDir = path2folder + f"/d_{file}"
+                output_dir = path2folder + f"/d_{file}"
                 # print(os.path.join(dir, file))
                 if file.endswith(file_type):
                     with open(os.path.join(dir, file), 'r') as f:
@@ -43,14 +42,15 @@ def translate(path2folder):
                     response = prompt2gpt(propmt)
                         
                     # Remove comments
-                    clean_code = remove_comments(response)
+                    file = File()
+                    clean_code = file.remove_comments(response)
                         
                     print(clean_code)
                         
-                    os.chdir(outputDir)
+                    os.chdir(output_dir)
                     # Create a file contianing the code from LLM in correct base name (Rust file)
-                    RustBase = file.split(".")[0] + ".rs" 
-                    with open(RustBase, "w") as f:
+                    rust_base = file.split(".")[0] + ".rs" 
+                    with open(rust_base, "w") as f:
                         f.write(clean_code)
                     
                 else:
