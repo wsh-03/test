@@ -1,15 +1,55 @@
 import os
 import csv
 import shutil
-
-from comments import remove_comments
+import re
 
 class File:
     def __init__(self):
         self.fileInfo = []
         self.fileType = ".c"
                 
-                
+    def remove_comments(self, file):
+        if os.path.isfile(file):
+            with open(file, 'r') as f:
+                lines = f.read()
+        else:
+            lines = file
+        
+        code = lines
+    
+        # Patterns for /* */ muilti line style comment
+        pattern4m = re.compile(r'/\*.*?\*/', flags=re.DOTALL)
+        # Pattern for ``` style single line comment
+        pattern4llm = re.compile(r'```.*')
+        # Patther for // style single line comment
+        patthern4s = re.compile(r'//.*')
+    
+        # Remove all /* */ style comments (multi-line): C style comment
+        code = re.sub(pattern4m, "", code)
+        # Remove all // style comments (single-line): C style comment
+        code = re.sub(patthern4s, "", code)
+        # Remove ``` style comment (single-line) result producted by LLM
+        code = re.sub(pattern4llm,"",code)
+    
+        return code
+    
+    def get_header(self, file):
+        if os.path.isfile(file):
+            with open(file, 'r') as f:
+                lines = f.read()
+        else:
+            lines = file
+    
+        code = lines
+        
+        # Pattern for #include
+        pattern4h = re.compile(r'#include.*')
+        code = re.findall(pattern4h, code)
+        
+        return code
+        
+    
+    
     def logFile(self, path2folder):
         if os.path.isdir(path2folder):
             print(f"Path Checked: {path2folder}\n")
@@ -21,7 +61,7 @@ class File:
                         # Get the path to the file
                         path2file = os.path.join(dir, file)
                         # Remove comments in the file
-                        processedFile = remove_comments(path2file)
+                        processedFile = self.remove_comments(path2file)
 
                         # print("clean code: \n", processedFile)
                         
