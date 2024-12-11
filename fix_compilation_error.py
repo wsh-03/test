@@ -1,42 +1,108 @@
 import subprocess
 import os
-# import json
+import json
+from files import File
 
-# # define the path to the rust file
-# path2rust = "e:\work\test\test.rs"
-# # define the file name and the output executable file name
-# output_executable = "e:\work\test\test.exe"
+def remove_file(rust_path, c_path, compilation_errors):
+    if compilation_errors == False:
+        os.remove(c_path)
+        os.rename(c_path, rust_file_path)
+        print(f"Replaced {c_path} with {rust_file_path}")
+    elif compilation_errors == True:
+        os.remove(rust_path)
+        os.rename(rust_file_path, c_path)
+        print(f"Replaced {rust_file_path} with {c_path}")
+    
+def replace_file(kernel_driver_path, rust_file_path, compilation_errors):
+    if not os.path.exists(kernel_driver_path):
+        raise FileNotFoundError(f"The kernel driver path {kernel_driver_path} does not exist.")
+    if not os.path.exists(rust_file_path):
+        raise FileNotFoundError(f"The Rust file path {rust_file_path} does not exist.")
 
-# # run the rust compiler to compile the rust file
-# result = subprocess.run(["rustc", path2rust, '-o', output_executable], 
-#                         capture_output=True, text=True)
-
-# def write_script():
-#     script_content = """
-#     rustc /home/wsh-v22/test/work/test/test.rs --error-format json 2>&1 | tee error.json
-#     """
-#     return script_content
-
-def compile_error(path2linux):
-    # path2script = "/home/wsh-v22/test/work/test/bash_script.sh"
-    # script = write_script()
-    # with open(path2script, "w") as f:
-    #     f.write(script)
-    # os.chmod(path2script, 0o777)
-    if not os.path.exists(path2linux):
-        return f"Error: {path2linux} does not exist"
-    else:
-        os.chdir(path2linux)
+    # List all file paths in the target directory
+    file = File()
+    kernel_files = file.find_file_path(kernel_driver_path, ".c")
+    # print("Files in the kernel driver directory:", kernel_files)
+    # Replace the .c file with the .rs file
+    for c_file_path in kernel_files:
+        # Retrieve the base name of the C file
+        c_file_name = os.path.basename(c_file_path)
+        c_base_name = os.path.splitext(c_file_name)[0]
+        # Retrieve the base name of the Rust file
+        rs_file_name = os.path.basename(rust_file_path)
+        rs_base_name = os.path.splitext(rs_file_name)[0]
+        if c_base_name == rs_base_name:
+            remove_file(rust_file_path, c_file_path, compilation_errors)
+            break
         
+
+def compile_linux(linux_path):
+    # Change directory to the Linux kernel source directory
+    if not os.path.exists(linux_path):
+        error_message = f"Error: {linux_path} does not exist"
+        print(error_message)
+        return {
+            "status": "failure",
+            "stdout": None,
+            "stderr": None,
+            "error": error_message
+        }
+    
+    # Run the make command to compile the Linux kernel
+    compile_command = f"make -C {linux_path} LLVM=1 ARCH=x86_64"
     try:
-        result = subprocess.run(['make', '-C', path2linux, 'LLVM=1','ARCH=x86_64'], capture_output=True, text=True)
+        result = subprocess.run(
+            compile_command,
+            shell=True,
+            text=True,
+            capture_output=True
+        )
+        if result.returncode == 0:
+            print("Compilation succeeded.")
+            return {
+                "status": "success",
+                "stdout": result.stdout.strip(),
+                "stderr": None
+            }
+        else:
+            print("Compilation failed:")
+            return {
+                "status": "failure",
+                "stdout": result.stdout.strip(),
+                "stderr": result.stderr.strip()
+            }
     except Exception as e:
-        return f"Error occured when run compilation:{e}"
-    return result
+        error_message = f"Unexpected error: {e}"
+        print(error_message)
+        return {
+            "status": "failure",
+            "error": str(e)
+        }
+        
+        
+if __name__ == "__main__":
+    kernel_driver_path = "/home/e62562sw/linux_kernel/linux/drivers/rtc"
+    rust_file_path = "/home/e62562sw/test/rtc"
+    linux_path = "/home/e62562sw/linux_kernel/linux"
+    
+    file = File()
+    rust_files = file.find_file_path(rust_file_path, ".rs")
+    for file in rust_files:
+        replace_file(kernel_driver_path, file, False)
+        # Compile the Linux kernel
+        compile_result = compile_linux(linux_path)
+        # Write the results to a JSON file
+        output_json_path = os.path.splitext(file)[0] + ".json"
+        try:
+            with open(output_json_path, 'w') as json_file:
+                json.dump(compile_result, json_file, indent=4)
+                print(f"Compilation errors written to {output_json_path}")
+        except Exception as e:
+            print(f"Failed to write JSON file: {e}")
 
-
-# path2file = "/home/wsh-v22/test/work/exp/pci_bus/pci_bus.rs"
-# if compile_error(path2file).stderr == "":
-#     print("No Compilaton Error")
-# else:
-#     print(compile_error(path2file).stderr)
+        if compile_result.get("status") == "success":
+            print("Compilation succeeded.")
+        else:
+            replace_file(kernel_driver_path, file, True)
+            print("Compilation failed:")
+            print(compile_result.stderr)
