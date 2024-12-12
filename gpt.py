@@ -20,20 +20,16 @@ def prompt2gpt(prompt):
         messages = [
             
                 {
-                    "role": "system",
-                    "content": "You are an C to Rust programming language translator. You will be given a driver code. You must generate a equivalent Rust code."
-                },
-                {
                     "role": "user", 
-                     "content": prompt
+                     "content": "You are a C to Rust programming language translator. You will be given driver code and you must generate equivalent Rust code. " + prompt
                 }
                     ],
         model = model_type,
 
     )
-    
-    # Extract the reply content
-    reply_content = chat_completion.choices[0].message["content"]
+    OPENAI_API_KEY
+    # Get the reply content
+    reply_content = chat_completion.choices[0].message.content
     
     # Track the history
     question_history.append({"role": "user", "content": prompt})

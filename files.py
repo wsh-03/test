@@ -62,65 +62,109 @@ class File:
     
         return headers
     
-    def log_file(self, path2folder):
+    def write_headers(self, file, headers):
+        with open(file, 'w') as f:
+            for header in headers:
+                f.write(header + "\n")
+    
+    def log_file(self, path2folder, csv_name):
         if os.path.isdir(path2folder):
             print(f"Path Checked: {path2folder}\n")
             # Find the lines of code and remove the comments from each file in the target directory
             file_type = ".c"
+            driver_name = ""
             for root, dirs, files in os.walk(path2folder):
+                driver_name = os.path.relpath(root, path2folder).split(os.sep)[0]
                 for file in files:
-                    # Check if the file is of the specified type
+                    # Extract specified file type
                     if os.path.splitext(file)[1] == file_type:
                         # Get the path to the file
-                        path2file = os.path.join(dir, file)
+                        path2file = os.path.join(root, file)
                         # Remove comments in the file
                         processed_file = self.remove_comments(path2file)
 
                         # print("clean code: \n", processedFile)
                         
-                        # Separate the code into individual lines
-                        split_by_line = processed_file.split("\n")
+                        # Get the lines of code in the file
+                        split_by_line = processed_file.split("\n")  # Split the code into lines
+                        line_of_code = len(split_by_line)
                         # Append the file information to the list of Dictionaries
-                        self.file_info.append({'Path': path2file, 
-                                                   'File': file,
-                                                   'LOC': len(split_by_line)})
+                        self.file_info.append({
+                                                'Driver Name': driver_name,   
+                                                'Path': path2file, 
+                                                'File': file,
+                                                'LOC': line_of_code
+                                                }
+                                              )
                         
                         # with open(path2file, 'r') as f:
                         #     print("Original LOC: ", len(f.readlines()))
                         #     print("LOC After Processed", len(splitByLine))
                         
-        # Log the information into a CSV file
-        if self.file_info:          # Check if the list is not empty
-            # Sort the lines of code of each file in ascending order
-            sorted_lod= sorted(self.file_info, key=lambda x: x['LOC'])
-            # Get the fieldnames of the dictionary
-            fieldnames = sorted_lod[0].keys()
-            # Log information into a CSV file
-            with open('info.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames = fieldnames )
-                writer.writeheader()
-                writer.writerows(sorted_lod)
-            print("Fieldnames:", fieldnames)
+            # Log the information into a CSV file
+            if self.file_info:          
+                # Sort the lines of code of each file in ascending order
+                sorted_lod= sorted(self.file_info, key=lambda x: x['LOC'])
+                # Get the fieldnames of the dictionary
+                field_names = sorted_lod[0].keys()
+                # Log information into a CSV file
+                with open(f"{csv_name}", 'w', newline='') as csvfile:
+                    writer = csv.DictWriter(csvfile, fieldnames = field_names )
+                    writer.writeheader()
+                    writer.writerows(sorted_lod)
+                print("Field names:", field_names)
+                    
         else:
             print("The list of dictionaries is empty.")
-    
-    def create_dir(self, path2csv, driver_name, number):
-        # Check files that has less than 200 lines of code listed in the csv file
-        with open(path2csv, 'r') as pathInfo:
-            csvreader = csv.DictReader(pathInfo)
+            
+    def count_driver_loc(self, path2csv):
+        # Count the total lines of code for each driver
+        driver_loc = {}
+        with open(path2csv, 'r') as info:
+            csvreader = csv.DictReader(info)
+            # count LOC for each driver name
+            total_loc = 0
             for row in csvreader:
-                if int(row['LOC']) < number:
+                driver_name = row["Driver Name"]
+                loc = int(row["LOC"])
+                driver_loc[driver_name] = driver_loc.get(driver_name, 0) + loc
+
+        # Print the LOC summary for each driver
+        for driver, total_loc in driver_loc.items():
+            print(f"Driver Name: {driver}, Total LOC: {total_loc}")
+            
+        # Open the CSV file for writing
+        with open("driver_loc.csv", 'w') as info:
+            writer = csv.writer(info)
+            # Write the header row
+            writer.writerow(["Driver Name", "Total LOC"])
+            # Write each driver and its LOC to the file
+            for driver, loc in driver_loc.items():
+                writer.writerow([driver, loc])
+    
+        print("Driver LOC data successfully written to driver_loc")
+    
+    def create_dir(self, path2csv, driver_name):
+        with open(path2csv, 'r') as info:
+            csvreader = csv.DictReader(info)
+            for row in csvreader:
+                if row['Driver Name'] == "tc":
                     os.chdir(os.path.dirname(path2csv))
                     os.makedirs(os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
                     print("Path Created: ", os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
                     shutil.copy(row['Path'], os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
+                    
+
 
 # file = File()
 
-# path2csv = "/home/e62562sw/test/info.csv"
-# number = 200
-# driver_name = "rtc"
-# file.createDir(path2csv, driver_name, number)
+# path2csv = "/home/wsh/test/linux.csv"
+# driver_name = "tc"
+# file.create_dir(path2csv, driver_name)
 
-# path2folder = "/home/e62562sw/linux_kernel/linux/drivers/rtc"
-# file_clean.clean_file(path2folder)
+# path2folder = "/home/wsh/linux/drivers"
+# csv_name = "linux.csv"
+# file.log_file(path2folder, csv_name)
+
+# path2csv = "/home/wsh/test/linux.csv"
+# file.count_driver_loc(path2csv)
