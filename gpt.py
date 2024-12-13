@@ -27,7 +27,6 @@ def prompt2gpt(prompt):
         model = model_type,
 
     )
-    OPENAI_API_KEY
     # Get the reply content
     reply_content = chat_completion.choices[0].message.content
     

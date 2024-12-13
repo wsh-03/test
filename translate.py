@@ -1,7 +1,7 @@
 import os
 from gpt import prompt2gpt
 from pathlib import Path
-from files import File
+from file  s import File
 
 
 def translate(path2folder):
@@ -41,7 +41,7 @@ def translate(path2folder):
     else:
         return f"ERROR: {path2folder} not found"
 
-path2folder = "/home/wsh/test/tc"
+path2folder = "/home/wsh/test/connector"
 print(translate(path2folder))
 
 

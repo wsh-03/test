@@ -7,19 +7,8 @@ import os
 class File:
     def __init__(self):
         self.file_info = []
-                
-    def find_file_path(self, path2folder, file_type):
-        file_path = []
-        for root, dirs, files in os.walk(path2folder):
-            for file in files:
-                # Check if the file is of the specified type
-                if os.path.splitext(file)[1] == file_type:
-                    # Get the path to the file
-                    path2file = os.path.join(root, file)
-                    file_path.append(path2file)
-        return file_path
     
-
+    
     def remove_comments(self, file):
         # Check if `file` is a valid file path or raw content
         if os.path.isfile(file):
@@ -45,27 +34,6 @@ class File:
         code = re.sub(pattern4llm,"",code)
     
         return code
-    
-    def get_headers(self, file):
-        if isinstance(file, str):
-            if os.path.isfile(file):  # Check if it's a valid file path
-                with open(file, 'r') as f:
-                    lines = f.read()
-            else:  # Assume it's raw file content as a string
-                lines = file
-    
-        # Pattern for finding headers
-        pattern4h = re.compile(r'#include.*')
-    
-        # Find headers in the code
-        headers = re.findall(pattern4h, lines)
-    
-        return headers
-    
-    def write_headers(self, file, headers):
-        with open(file, 'w') as f:
-            for header in headers:
-                f.write(header + "\n")
     
     def log_file(self, path2folder, csv_name):
         if os.path.isdir(path2folder):
@@ -97,10 +65,6 @@ class File:
                                                 }
                                               )
                         
-                        # with open(path2file, 'r') as f:
-                        #     print("Original LOC: ", len(f.readlines()))
-                        #     print("LOC After Processed", len(splitByLine))
-                        
             # Log the information into a CSV file
             if self.file_info:          
                 # Sort the lines of code of each file in ascending order
@@ -117,7 +81,7 @@ class File:
         else:
             print("The list of dictionaries is empty.")
             
-    def count_driver_loc(self, path2csv):
+    def count_driver_loc(self, path2csv,driver_name):
         # Count the total lines of code for each driver
         driver_loc = {}
         with open(path2csv, 'r') as info:
@@ -134,7 +98,7 @@ class File:
             print(f"Driver Name: {driver}, Total LOC: {total_loc}")
             
         # Open the CSV file for writing
-        with open("driver_loc.csv", 'w') as info:
+        with open(f"{driver_name}.csv", 'w') as info:
             writer = csv.writer(info)
             # Write the header row
             writer.writerow(["Driver Name", "Total LOC"])
@@ -144,27 +108,45 @@ class File:
     
         print("Driver LOC data successfully written to driver_loc")
     
-    def create_dir(self, path2csv, driver_name):
+    def get_c_headers(self, file):
+        if isinstance(file, str):
+            if os.path.isfile(file):  # Check if it's a valid file path
+                with open(file, 'r') as f:
+                    lines = f.read()
+            else:  # Assume it's raw file content as a string
+                lines = file
+        # Pattern for finding headers
+        pattern4h = re.compile(r'#include.*')
+        # Find headers in the code
+        headers = re.findall(pattern4h, lines)
+        return headers
+
+    def get_driver_info(self, path2csv, driver_name):
+        self.count_driver_loc(path2csv, driver_name)
+        headers = []
         with open(path2csv, 'r') as info:
             csvreader = csv.DictReader(info)
             for row in csvreader:
-                if row['Driver Name'] == "tc":
+                if row['Driver Name'] == f'{driver_name}':
                     os.chdir(os.path.dirname(path2csv))
                     os.makedirs(os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
                     print("Path Created: ", os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
                     shutil.copy(row['Path'], os.getcwd()+ "/" + driver_name + "/" + "d_" + row['File'])
-                    
+                    for header in self.get_c_headers(row['Path']):
+                        if header not in headers:
+                            headers.append(header)
+        print("Headers: ", headers)
+        with open(f"{os.path.dirname(path2csv)}/{driver_name}/{driver_name}_headers.txt", 'w') as f:
+            for header in headers:
+                f.write(header + "\n")
 
 
 # file = File()
 
 # path2csv = "/home/wsh/test/linux.csv"
-# driver_name = "tc"
-# file.create_dir(path2csv, driver_name)
+# driver_name = "connector"
+# file.get_driver_info(path2csv, driver_name)
 
 # path2folder = "/home/wsh/linux/drivers"
 # csv_name = "linux.csv"
 # file.log_file(path2folder, csv_name)
-
-# path2csv = "/home/wsh/test/linux.csv"
-# file.count_driver_loc(path2csv)

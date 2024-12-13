@@ -1,0 +1,303 @@
+error: cannot find macro `list_entry` in this scope
+  --> drivers/connector/cn_queue.rs:74:21
+   |
+74 | ...   let __cbq = list_entry!(pos, cn_callback_entry, callback_entry);
+   |                   ^^^^^^^^^^
+
+error: cannot find macro `list_entry` in this scope
+   --> drivers/connector/cn_queue.rs:103:19
+    |
+103 | ...   let cbq = list_entry!(pos, cn_callback_entry, callback_entry);
+    |                 ^^^^^^^^^^
+
+error: cannot find macro `list_entry` in this scope
+   --> drivers/connector/cn_queue.rs:144:19
+    |
+144 | ...   let cbq = list_entry!(pos, cn_callback_entry, callback_entry);
+    |                 ^^^^^^^^^^
+
+error[E0425]: cannot find value `cbq` in this scope
+   --> drivers/connector/cn_queue.rs:114:35
+    |
+114 |         cn_queue_release_callback(cbq);
+    |                                   ^^^
+    |
+help: the binding `cbq` is available in a different scope in the same function
+   --> drivers/connector/cn_queue.rs:103:13
+    |
+103 | ...   let cbq = list_entry!(pos, cn_callback_entry, callback_entry);
+    |           ^^^
+
+error[E0425]: cannot find function `kzalloc` in this scope
+     --> drivers/connector/cn_queue.rs:13:15
+      |
+13    |     let cbq = kzalloc(core::mem::size_of::<cn_callback_entry>(),...
+      |               ^^^^^^^ help: a function with a similar name exists: `d_alloc`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:30993:5
+      |
+30993 |     pub fn d_alloc(arg1: *mut dentry, arg2: *const qstr) -> *mut dentry;
+      |     -------------------------------------------------------------------- similarly named function `d_alloc` defined here
+
+error[E0425]: cannot find function `pr_err` in this scope
+  --> drivers/connector/cn_queue.rs:15:9
+   |
+15 | ...   pr_err(b"Failed to create new callback queue.\n\0".as_ptr() a...
+   |       ^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `refcount_set` in this scope
+  --> drivers/connector/cn_queue.rs:19:5
+   |
+19 |     refcount_set(&mut (*cbq).refcnt, 1);
+   |     ^^^^^^^^^^^^ help: a function with a similar name exists: `refcount_inc`
+   |
+  ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:97:5
+   |
+97 |     pub fn refcount_inc(r: *mut refcount_t);
+   |     ---------------------------------------- similarly named function `refcount_inc` defined here
+
+error[E0425]: cannot find function `atomic_inc` in this scope
+  --> drivers/connector/cn_queue.rs:21:5
+   |
+21 |     atomic_inc(&mut (*dev).refcnt);
+   |     ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `atomic_dec` in this scope
+  --> drivers/connector/cn_queue.rs:47:5
+   |
+47 |     atomic_dec(&mut (*(*cbq).pdev).refcnt);
+   |     ^^^^^^^^^^ not found in this scope
+
+error[E0600]: cannot apply unary operator `-` to type `u32`
+  --> drivers/connector/cn_queue.rs:67:16
+   |
+67 |         return -ENOMEM;
+   |                ^^^^^^^ cannot apply unary operator `-`
+   |
+   = note: unsigned values cannot be negated
+
+error[E0308]: mismatched types
+  --> drivers/connector/cn_queue.rs:67:16
+   |
+64 | ) -> i32 {
+   |      --- expected `i32` because of return type
+...
+67 |         return -ENOMEM;
+   |                ^^^^^^^ expected `i32`, found `u32`
+   |
+help: you can convert a `u32` to an `i32` and panic if the converted value doesn't fit
+   |
+67 |         return (-ENOMEM).try_into().unwrap();
+   |                +       +++++++++++++++++++++
+
+error[E0425]: cannot find function `spin_lock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:70:5
+    |
+70  |     spin_lock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^ help: a function with a similar name exists: `spin_lock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:135:5
+    |
+135 |     pub fn spin_lock(lock: *mut spinlock_t);
+    |     ---------------------------------------- similarly named function `spin_lock` defined here
+
+error[E0425]: cannot find function `list_add_tail` in this scope
+     --> drivers/connector/cn_queue.rs:82:9
+      |
+82    |         list_add_tail(&mut (*cbq).callback_entry, &mut (*dev).qu...
+      |         ^^^^^^^^^^^^^ help: a function with a similar name exists: `klist_add_tail`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:47197:5
+      |
+47197 |     pub fn klist_add_tail(n: *mut klist_node, k: *mut klist);
+      |     --------------------------------------------------------- similarly named function `klist_add_tail` defined here
+
+error[E0425]: cannot find function `spin_unlock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:84:5
+    |
+84  |     spin_unlock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^^^ help: a function with a similar name exists: `spin_unlock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:139:5
+    |
+139 |     pub fn spin_unlock(lock: *mut spinlock_t);
+    |     ------------------------------------------ similarly named function `spin_unlock` defined here
+
+error[E0600]: cannot apply unary operator `-` to type `u32`
+  --> drivers/connector/cn_queue.rs:88:16
+   |
+88 |         return -EINVAL;
+   |                ^^^^^^^ cannot apply unary operator `-`
+   |
+   = note: unsigned values cannot be negated
+
+error[E0425]: cannot find function `spin_lock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:99:5
+    |
+99  |     spin_lock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^ help: a function with a similar name exists: `spin_lock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:135:5
+    |
+135 |     pub fn spin_lock(lock: *mut spinlock_t);
+    |     ---------------------------------------- similarly named function `spin_lock` defined here
+
+error[E0425]: cannot find function `list_del` in this scope
+     --> drivers/connector/cn_queue.rs:105:13
+      |
+105   |             list_del(&mut (*cbq).callback_entry);
+      |             ^^^^^^^^ help: a function with a similar name exists: `klist_del`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:47209:5
+      |
+47209 |     pub fn klist_del(n: *mut klist_node);
+      |     ------------------------------------- similarly named function `klist_del` defined here
+
+error[E0425]: cannot find function `spin_unlock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:111:5
+    |
+111 |     spin_unlock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^^^ help: a function with a similar name exists: `spin_unlock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:139:5
+    |
+139 |     pub fn spin_unlock(lock: *mut spinlock_t);
+    |     ------------------------------------------ similarly named function `spin_unlock` defined here
+
+error[E0425]: cannot find function `kzalloc` in this scope
+     --> drivers/connector/cn_queue.rs:119:15
+      |
+119   |     let dev = kzalloc(core::mem::size_of::<cn_queue_dev>(), GFP_...
+      |               ^^^^^^^ help: a function with a similar name exists: `d_alloc`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:30993:5
+      |
+30993 |     pub fn d_alloc(arg1: *mut dentry, arg2: *const qstr) -> *mut dentry;
+      |     -------------------------------------------------------------------- similarly named function `d_alloc` defined here
+
+error[E0425]: cannot find function `atomic_set` in this scope
+   --> drivers/connector/cn_queue.rs:130:5
+    |
+130 |     atomic_set(&mut (*dev).refcnt, 0);
+    |     ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function, tuple struct or tuple variant `INIT_LIST_HEAD` in this scope
+   --> drivers/connector/cn_queue.rs:131:5
+    |
+131 |     INIT_LIST_HEAD(&mut (*dev).queue_list);
+    |     ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `spin_lock_init` in this scope
+   --> drivers/connector/cn_queue.rs:132:5
+    |
+132 |       spin_lock_init(&mut (*dev).queue_lock);
+    |       ^^^^^^^^^^^^^^ help: a function with a similar name exists: `__spin_lock_init`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:127:5
+    |
+127 | /     pub fn __spin_lock_init(
+128 | |         lock: *mut spinlock_t,
+129 | |         name: *const ffi::c_char,
+130 | |         key: *mut lock_class_key,
+131 | |     );
+    | |______- similarly named function `__spin_lock_init` defined here
+
+error[E0425]: cannot find function `spin_lock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:140:5
+    |
+140 |     spin_lock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^ help: a function with a similar name exists: `spin_lock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:135:5
+    |
+135 |     pub fn spin_lock(lock: *mut spinlock_t);
+    |     ---------------------------------------- similarly named function `spin_lock` defined here
+
+error[E0425]: cannot find function `list_del` in this scope
+     --> drivers/connector/cn_queue.rs:145:9
+      |
+145   |         list_del(&mut (*cbq).callback_entry);
+      |         ^^^^^^^^ help: a function with a similar name exists: `klist_del`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:47209:5
+      |
+47209 |     pub fn klist_del(n: *mut klist_node);
+      |     ------------------------------------- similarly named function `klist_del` defined here
+
+error[E0425]: cannot find function `spin_unlock_bh` in this scope
+   --> drivers/connector/cn_queue.rs:148:5
+    |
+148 |     spin_unlock_bh(&mut (*dev).queue_lock);
+    |     ^^^^^^^^^^^^^^ help: a function with a similar name exists: `spin_unlock`
+    |
+   ::: /home/wsh/linux/rust/bindings/bindings_helpers_generated.rs:139:5
+    |
+139 |     pub fn spin_unlock(lock: *mut spinlock_t);
+    |     ------------------------------------------ similarly named function `spin_unlock` defined here
+
+error[E0425]: cannot find function `atomic_read` in this scope
+   --> drivers/connector/cn_queue.rs:150:11
+    |
+150 |     while atomic_read(&mut (*dev).refcnt) != 0 {
+    |           ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `atomic_read` in this scope
+   --> drivers/connector/cn_queue.rs:154:13
+    |
+154 |             atomic_read(&mut (*dev).refcnt),
+    |             ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `pr_info` in this scope
+     --> drivers/connector/cn_queue.rs:151:9
+      |
+151   |         pr_info(
+      |         ^^^^^^^ help: a static with a similar name exists: `pv_info`
+      |
+     ::: /home/wsh/linux/rust/bindings/bindings_generated.rs:14635:5
+      |
+14635 |     pub static mut pv_info: pv_info;
+      |     ------------------------------- similarly named static `pv_info` defined here
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe block
+  --> drivers/connector/cn_queue.rs:52:8
+   |
+52 |     if (*i1).idx == (*i2).idx && (*i1).val == (*i2).val {
+   |        ^^^^^ dereference of raw pointer
+   |
+   = note: for more information, see issue #71668 <https://github.com/rust-lang/rust/issues/71668>
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+note: an unsafe function restricts its caller, but its body is safe by default
+  --> drivers/connector/cn_queue.rs:51:1
+   |
+51 | unsafe fn cn_cb_equal(i1: *const cb_id, i2: *const cb_id) -> i32 {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: requested on the command line with `-D unsafe-op-in-unsafe-fn`
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe block
+  --> drivers/connector/cn_queue.rs:52:21
+   |
+52 |     if (*i1).idx == (*i2).idx && (*i1).val == (*i2).val {
+   |                     ^^^^^ dereference of raw pointer
+   |
+   = note: for more information, see issue #71668 <https://github.com/rust-lang/rust/issues/71668>
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe block
+  --> drivers/connector/cn_queue.rs:52:34
+   |
+52 |     if (*i1).idx == (*i2).idx && (*i1).val == (*i2).val {
+   |                                  ^^^^^ dereference of raw pointer
+   |
+   = note: for more information, see issue #71668 <https://github.com/rust-lang/rust/issues/71668>
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error[E0133]: dereference of raw pointer is unsafe and requires unsafe block
+  --> drivers/connector/cn_queue.rs:52:47
+   |
+52 |     if (*i1).idx == (*i2).idx && (*i1).val == (*i2).val {
+   |                                               ^^^^^ dereference of raw pointer
+   |
+   = note: for more information, see issue #71668 <https://github.com/rust-lang/rust/issues/71668>
+   = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior
+
+error: aborting due to 32 previous errors
