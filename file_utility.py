@@ -51,6 +51,19 @@ class FileProcessor:
     
         return code
     
+    def extract_file_name(self, log_message):
+        # Define the regex pattern to match the RUSTC line
+        pattern = r"RUSTC\s+(.*\.o)"
+        match = re.search(pattern, log_message)
+        if match:
+            # Extract the full file path
+            file_path = match.group(1)
+            # Get the base name of the file without extension
+            file_name = file_path.split("/")[-1].replace(".o", "")
+            return file_name
+        else:
+            return None
+    
     # log the information of all driver files in the Linux directory
     def log_file(self, path2folder):
         file_info = []
