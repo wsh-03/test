@@ -8,14 +8,21 @@ class File:
     def __init__(self):
         self.file_info = []
     
+    def find_file_path(self, path, file_type):
+        file_paths = []
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                if file.endswith(file_type):
+                    file_paths.append(os.path.join(root, file))
+        return file_paths
     
     def remove_comments(self, file):
-        # Check if `file` is a valid file path or raw content
+        # Check if it is a valid file path or raw content
         if os.path.isfile(file):
             with open(file, 'r') as f:
                 lines = f.read()
         else:
-            lines = file  # Assume it's raw file content as a string
+            lines = file 
     
         code = lines
     
@@ -34,6 +41,19 @@ class File:
         code = re.sub(pattern4llm,"",code)
     
         return code
+    
+    def extract_file_name(self, log_message):
+        # Define the regex pattern to match the RUSTC line
+        pattern = r"RUSTC\s+(.*\.o)"
+        match = re.search(pattern, log_message)
+        if match:
+            # Extract the full file path
+            file_path = match.group(1)
+            # Get the base name of the file without extension
+            file_name = file_path.split("/")[-1].replace(".o", "")
+            return file_name
+        else:
+            return None
     
     def log_file(self, path2folder, csv_name):
         if os.path.isdir(path2folder):
