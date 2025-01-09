@@ -84,11 +84,18 @@ class compilation:
                 "status": "failure",
                 "error": str(e) 
                 }
+<<<<<<< HEAD
     
     def fix_compilation_errors(self, compilation_error, linux_path, rust_folder, target_driver_folder, driver_name, max_attempts):
         class_file = FileProcessor()
         c_file_paths = class_file.list_files(rust_folder, ".c")
         kernel_rust_file_paths = class_file.list_files(target_driver_folder, ".rs")
+=======
+        
+    def fix_compilation_errors(compilation_error, linux_path, rust_folder, target_driver_folder, driver_name, max_attempts):
+        c_file_paths = File().find_file_path(rust_folder, ".c")
+        kernel_rust_file_paths = File().find_file_path(target_driver_folder, ".rs")
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
         file_name = class_file.extract_file_name(compilation_error.get("stdout"))
         c_code = ""
         rust_code = ""
@@ -99,12 +106,20 @@ class compilation:
         for c_file_path in c_file_paths:
             c_base_name = os.path.splitext(os.path.basename(c_file_path))[0]
             if c_base_name == file_name:
+<<<<<<< HEAD
                 c_code = class_file.remove_comments(c_file_path)
+=======
+                c_code = File().remove_comments(c_file_path)
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
                 break
         for rust_file_path in kernel_rust_file_paths:
             rust_base_name = os.path.splitext(os.path.basename(rust_file_path))[0]
             if rust_base_name == file_name:
+<<<<<<< HEAD
                 rust_code = class_file.remove_comments(rust_file_path)
+=======
+                rust_code = File().remove_comments(rust_file_path)
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
                 target_file_path = rust_file_path
                 break
     
@@ -117,7 +132,11 @@ class compilation:
         for attempt in range(1, max_attempts + 1):
             response = prompt2gpt(prompt, True)
             # Remove comments from the response
+<<<<<<< HEAD
             clean_code = class_file.remove_comments(response)
+=======
+            clean_code = File().remove_comments(response)
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
             # Write the corrected Rust code to the file
             print(f"Writing the corrected Rust code to {target_file_path}")
             with open(target_file_path, 'w') as f:
@@ -125,7 +144,11 @@ class compilation:
             # Compile the Linux kernel
             print(compilation_error.get("stderr"))
             if compilation_error.get("stderr") not in result.get("stderr"):
+<<<<<<< HEAD
                 compilation_result = self.compile_linux(linux_path)
+=======
+                compilation_result = compile_linux(linux_path)
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
                 compilation_result["attempts"] = attempt
             result.update(compilation_result)
             # Write the results to a JSON file
@@ -137,6 +160,7 @@ class compilation:
                 print(f"Compilation succeeded after {attempt} attempts.")
                 return result
         
+<<<<<<< HEAD
 if __name__ == "__main__":
     # Replace the kernel driver path and Rust file path with actual values
     kernel_driver_path = "/home/e62562sw/linux_kernel/linux/drivers/rtc"
@@ -158,11 +182,43 @@ if __name__ == "__main__":
                 print(f"Compilation errors written to {output_json_path}")
         except Exception as e:
             print(f"Failed to write JSON file: {e}")
+=======
+    def replace_file(self, kernel_driver_foler, rust_file_folder):
+    
+        if not os.path.exists(kernel_driver_foler):
+            raise FileNotFoundError(f"The kernel driver path {kernel_driver_path} does not exist.")
+        if not os.path.exists(rust_file_folder):
+            raise FileNotFoundError(f"The Rust file path {rust_file_folder} does not exist.")
+    
+        # Find all Rust file paths in the target directory
+        rust_file_paths = File().find_file_path(rust_file_folder, ".rs")
+        # Find all C file paths in the kernel driver directory
+        kernel_file_paths = File().find_file_path(kernel_driver_path, ".c")
+        # Replace the.rs file with the.c file
+        for c_file_path in kernel_file_paths:
+            # Retrieve the base name of the C file
+            c_base_name = os.path.splitext(os.path.basename(c_file_path))[0]
+            # Retrieve the base name of the Rust file
+            for rust_file_path in rust_file_paths:
+                if os.path.basename(rust_file_path) == c_base_name:
+                    print(f"Replacing {c_file_path} with {rust_file_path}")
+                    shutil.move(c_file_path, rust_file_path)
+                    break
 
-        if compile_result.get("status") == "success":
-            print("Compilation succeeded.")
-        else:
-            class_compilation.compilation_errors = True
-            class_compilation.replace_file(kernel_driver_path, file, class_compilation.compilation_errors)
-            print("Compilation failed:")
-            print(compile_result.get("stderr"))
+if __name__ == "__main__":
+    rust_file_folder = "/home/wsh/test/connector"
+    linux_path = "/home/wsh/linux"
+    driver_name = "connector"
+    kernel_driver_path = f"/home/wsh/linux/drivers/{driver_name}"
+    
+    # Replace the.rs file with the.c file
+    # replace_file(kernel_driver_path, rust_file_folder)
+    # Compile the Linux kernel
+    compile_result = compile_linux(linux_path)
+    if compile_result.get("status") == "failure":
+        # Attempt to fix the compilation errors
+        fix_compilation_errors(compile_result, linux_path, rust_file_folder, kernel_driver_path, driver_name, 10)
+    else:
+        print("Compilation succeeded.")
+>>>>>>> 5110a9159a04c90048476d6426bcd448373ec0eb
+
