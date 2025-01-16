@@ -111,7 +111,7 @@ class compilation:
         # Prompt to correct the Rust code based on the provided compilation error
     
         prompt = (
-                    f"Your task is to correct the Rust code with given compilation errors, always apply your corrections to the code and provide the corrected Rust code without any comments. Rust code: ```{rust_code}```; Compilation error: ```{compilation_error.get('stderr')}``` "
+                    f"Your task is to correct the Rust code with given compilation errors, always apply your corrections to the code and provide the corrected Rust code without comments. Rust code: ```{rust_code}```; Compilation error: ```{compilation_error.get('stderr')}``` "
                 )
         # Attempt to fix the error using the provided prompt
         for attempt in range(1, max_attempts + 1):
