@@ -101,7 +101,7 @@ class FileProcessor:
                 # Get the fieldnames of the dictionary
                 field_names = sorted_lod[0].keys()
                 # Log information into a CSV file
-                with open("driver_file.csv", 'w', newline='') as csvfile:
+                with open("driver_summary.csv", 'w', newline='') as csvfile:
                     writer = csv.DictWriter(csvfile, fieldnames = field_names )
                     writer.writeheader()
                     writer.writerows(sorted_lod)
@@ -121,7 +121,9 @@ class FileProcessor:
                 csvreader = csv.DictReader(info)
                 for row in csvreader:
                     loc = int(row[self.LOC_KEY])
+                    driver_name = row[self.DRIVER_NAME_KEY]
                     file_info[driver_name] = file_info.get(driver_name, 0) + loc
+                    print(f"Driver Name: {driver_name}, Path: {row[self.PATH_KEY]}, Total LOC: {loc}")
 
             # Print LOC
             for driver, loc in file_info.items():
@@ -206,15 +208,12 @@ class FileProcessor:
         # Update the header helper file
         self.update_header_helper(header_output)
         
-        
-file = FileProcessor()
+
+if __name__ == '__main__':
+    file = FileProcessor()
 
 
-path2csv = "/Users/harrywang/test/driver_summary.csv"
-driver_name = "connector"
-file.get_driver_info(path2csv, driver_name)
-
-# path2folder = "/home/wsh/linux/drivers"
-# csv_name = "linux.csv"
-# file.log_file(path2folder, csv_name)
-
+    path2csv = "/home/wsh/test/driver_summary.csv"
+    path2folder = "/home/wsh/linux/drivers"
+    driver_name = "connector"
+    file.get_driver_info(path2csv, path2folder, driver_name)

@@ -139,9 +139,9 @@ class compilation:
         
 if __name__ == "__main__":
     # Replace the kernel driver path and Rust file path with actual values
-    kernel_driver_path = "/home/e62562sw/linux_kernel/linux/drivers/rtc"
-    rust_file_path = "/home/e62562sw/test/rtc"
-    linux_path = "/home/e62562sw/linux_kernel/linux"
+    kernel_driver_path = "/home/wsh/linux/drivers/rtc"
+    rust_file_path = "/home/wsh/test/rtc"
+    linux_path = "/home/wsh/linux"
         
     class_compilation  = compilation()
     rust_files = class_compilation.class_file.list_files(rust_file_path, ".rs")
