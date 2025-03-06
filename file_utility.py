@@ -180,7 +180,7 @@ class FileProcessor:
             f.writelines(helper_content)            
         print("Header helper file updated")
     
-    # Get the driver information and copy the files to the new directory
+    # Get the driver information and copy the files in the target driver to the new directory
     def get_driver_info(self, path2csv, path2folder, driver_name):
         headers = []
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
@@ -190,7 +190,7 @@ class FileProcessor:
         with open(path2csv, 'r') as info:
             file_info = csv.DictReader(info)
             for row in file_info:
-                if row[self.DRIVER_NAME_KEY] == f'{driver_name}':
+                if row[self.DRIVER_NAME_KEY] == f'{driver_name}' and int(row[self.LOC_KEY]) <= 200:
                     output_dir = os.path.join(os.path.dirname(path2csv), driver_name, f"d_{row[self.FILE_KEY]}")
                     # Create the directory and Copy the file to the new directory according to the file location in csv
                     os.makedirs(output_dir, exist_ok=True)
@@ -215,5 +215,5 @@ if __name__ == '__main__':
 
     path2csv = "/home/wsh/test/driver_summary.csv"
     path2folder = "/home/wsh/linux/drivers"
-    driver_name = "connector"
+    driver_name = "rtc"
     file.get_driver_info(path2csv, path2folder, driver_name)

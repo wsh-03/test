@@ -6,7 +6,6 @@ from gpt import prompt2gpt
 import shutil
 
 class compilation:
-    class_file = FileProcessor()
     compilation_errors = False
     
     def remove_file(self, rust_path, c_path, compilation_errors):
@@ -138,24 +137,28 @@ class compilation:
                 return result
         
 if __name__ == "__main__":
-    # Replace the kernel driver path and Rust file path with actual values
-    kernel_driver_path = "/home/wsh/linux/drivers/rtc"
-    rust_file_path = "/home/wsh/test/rtc"
-    linux_path = "/home/wsh/linux"
+    # # Replace the kernel driver path and Rust file path with actual values
+    # kernel_driver_path = "/home/wsh/linux/drivers/rtc"
+    # rust_file_path = "/home/wsh/test/rtc"
+    # linux_path = "/home/wsh/linux"
         
-    class_compilation  = compilation()
-    rust_files = class_compilation.class_file.list_files(rust_file_path, ".rs")
-    for file in rust_files:
-        class_compilation.compilation_errors = False
-        class_compilation.replace_file(kernel_driver_path, file, class_compilation.compilation_errors)
-        # Compile the Linux kernel
-        compile_result = class_compilation.compile_linux(linux_path)
-        # Write the results to a JSON file
-        output_json_path = os.path.splitext(file)[0] + ".json"
-        try:
-            with open(output_json_path, 'w') as json_file:
-                json.dump(compile_result, json_file, indent=4)
-                print(f"Compilation errors written to {output_json_path}")
-        except Exception as e:
-            print(f"Failed to write JSON file: {e}")
+    # class_compilation  = compilation()
+    # rust_files = class_compilation.class_file.list_files(rust_file_path, ".rs")
+    # for file in rust_files:
+    #     class_compilation.compilation_errors = False
+    #     class_compilation.replace_file(kernel_driver_path, file, class_compilation.compilation_errors)
+    #     # Compile the Linux kernel
+    #     compile_result = class_compilation.compile_linux(linux_path)
+    #     # Write the results to a JSON file
+    #     output_json_path = os.path.splitext(file)[0] + ".json"
+    #     try:
+    #         with open(output_json_path, 'w') as json_file:
+    #             json.dump(compile_result, json_file, indent=4)
+    #             print(f"Compilation errors written to {output_json_path}")
+    #     except Exception as e:
+    #         print(f"Failed to write JSON file: {e}")
+    
+    class_compilation = compilation()
+    linux_path = "/home/wsh/linux"
+    print(compile_result := class_compilation.compile_linux(linux_path))
 

@@ -8,8 +8,8 @@ import os
 
 
 def prompt2gpt(prompt, fix_error):
-    if fix_error == True:
-        model_type = "gpt-4o" 
+    if fix_error == False:
+        model_type = "o3-mini" 
         key =  os.environ.get('OPENAI_API_KEY')
         if not key:
             raise ValueError("OPENAI_API_KEY is not set.")
@@ -22,7 +22,7 @@ def prompt2gpt(prompt, fix_error):
                 
                     {
                         "role": "system", 
-                        "content": "You are a Rust system programming expert."
+                        "content": "You are a C to Rust system programming translator for the Linux kernel. You will be provided with C code. Your task is to translate it into equivalent and safer Rust code."
                     },
                     {
                         "role": "user", 
@@ -30,13 +30,13 @@ def prompt2gpt(prompt, fix_error):
                     }
                         ],
             model = model_type,
-            temperature=0
+            temperature=1
         )
         # Get the reply content
         reply_content = chat_completion.choices[0].message.content
         return reply_content
     else:
-        model_type = "gpt-4o" 
+        model_type = "o3-mini" 
         key =  os.environ.get('OPENAI_API_KEY')
         if not key:
             raise ValueError("OPENAI_API_KEY is not set.")
@@ -48,7 +48,7 @@ def prompt2gpt(prompt, fix_error):
             messages = [
                     {
                         "role": "system", 
-                        "content": "You are a C and Rust system programming expert for Linux kernel."
+                        "content": "You are a Rust systems programmer for the Linux kernel. You will be provided with Rust code and its compilation errors. Your task is to correct the Rust code based on the provided compiler feedback."
                     },
                 
                     {
@@ -56,7 +56,7 @@ def prompt2gpt(prompt, fix_error):
                          "content": prompt
                     }
                         ],
-            temperature=0,
+            temperature=1,
             model = model_type)
         
         # Get the reply content
