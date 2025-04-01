@@ -2,7 +2,7 @@ import subprocess
 import os
 import json
 from file_utility import FileProcessor
-from gpt import prompt2gpt
+from gpt_translation import prompt2gpt
 import shutil
 
 class compilation:
@@ -89,7 +89,9 @@ class compilation:
         class_file = FileProcessor()
         c_file_paths = class_file.list_files(rust_folder, ".c")
         kernel_rust_file_paths = class_file.list_files(target_driver_folder, ".rs")
-        file_name = class_file.extract_file_name(compilation_error.get("stdout"))
+        base_name = class_file.get_base_name(compilation_error.get("stdout"))
+        if base_name is not None:
+            file_name = base_name
         c_code = ""
         rust_code = ""
         target_file_path = ""

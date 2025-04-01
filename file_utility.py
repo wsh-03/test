@@ -12,15 +12,34 @@ class FileProcessor:
     home_dir = os.environ.get("HOME")
     helper_file_path = f"{home_dir}/linux/rust/bindings/bindings_helper.h"
     
-    # Find the path to a file in a directory
+    # Retrieve the file content
+    def get_file_info(self, path2file, file_type):
+        if not os.path.isfile(path2file):
+            print(f"Error: {path2file} is not a valid file path.")
+            return None, None
+        try:
+            os.path.splitext(path2file)[1] == file_type
+            file_name = os.path.basename(path2file)
+            with open(path2file, 'r') as f:
+                file_content = f.read()
+                return file_content, file_name
+        except Exception as e:
+            print(f"Error: {e}")
+            return None, None
+        
+        return None, None
+    
+    # List the full path of a file in the target directory
     def list_files(self, path2folder, file_type):
+        if not os.path.isdir(path2folder):
+            return None
         file_path = []
         for root, _, files in os.walk(path2folder):
-            for file in files:
-                # Check if the file is of the specified type
-                if os.path.splitext(file)[1] == file_type:
+            for file_name in files:
+                # Check if the file name match the specific type
+                if os.path.splitext(file_name)[1] == file_type:
                     # Get the path to the file
-                    path2file = os.path.join(root, file)
+                    path2file = os.path.join(root, file_name)
                     file_path.append(path2file)
         return file_path
     
@@ -30,9 +49,11 @@ class FileProcessor:
         if os.path.isfile(file):
             with open(file, 'r') as f:
                 lines = f.read()
-        else:
+        elif file != "":
             lines = file  # Assume it's raw file content as a string
-    
+        else:
+            return None
+        
         code = lines
     
         # Patterns for /* */ muilti line style comment
@@ -51,7 +72,7 @@ class FileProcessor:
     
         return code
     
-    def extract_file_name(self, log_message):
+    def get_base_name(self, log_message):
         # Define the regex pattern to match the RUSTC line
         pattern = r"RUSTC\s+(.*\.o)"
         match = re.search(pattern, log_message)
@@ -106,14 +127,17 @@ class FileProcessor:
                     writer.writeheader()
                     writer.writerows(sorted_lod)
                 print("Field names:", field_names)
-                    
+                print("Driver file information successfully written to 'driver_file.csv'")            
         else:
             print("The list of dictionaries is empty.")
-            
+            return None
+
 
     # Count the lines of code for each driver and log the information in a CSV file
     def count_driver_loc(self, path2csv):
-        # DStore LOC in a single dictionary
+        if not os.path.isfile(path2csv):
+            return None
+        # Store LOC in a single dictionary
         file_info = {}
         try:
             # Read CSV file
@@ -137,14 +161,12 @@ class FileProcessor:
                 writer.writerows(sorted_data)
 
             print("Driver LOC data successfully written to 'driver_loc_summary.csv'")
-
-        except FileNotFoundError:
-            print(f"Error: File not found at path {path2csv}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"Error: {e}")
 
     # Get the headers from a C file
     def get_headers(self, file):
+        # Check if file is a valid string file path or header file data
         if isinstance(file, str):
             if os.path.isfile(file): 
                 with open(file, 'r') as f:
@@ -152,6 +174,8 @@ class FileProcessor:
             else: 
                 # Assume it's raw file content as a string
                 lines = file
+        else:
+            return None
         # Pattern for C header
         pattern4h = re.compile(r'#include.*')
         # Find all headers
@@ -160,8 +184,11 @@ class FileProcessor:
     
     # Update the header helper file with the unique headers from the C files
     def update_header_helper(self, file_path):
-        unique_headers = []
+        if not os.path.isfile(file_path):
+            return None
+        
         # Compare the headers in the binding helper file with the headers in the C files
+        unique_headers = []
         for header in self.get_headers(file_path):
             if header not in self.get_headers(self.helper_file_path):
                 unique_headers.append(header)
@@ -180,6 +207,9 @@ class FileProcessor:
     
     # Get the driver information and copy the files to the new directory
     def get_driver_info(self, path2csv, path2folder, driver_name):
+        if not os.path.isdir(path2folder):
+            return None
+        
         headers = []
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
         if not os.path.isfile(path2csv):
