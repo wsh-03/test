@@ -29,3 +29,4 @@ int devm_rtc_nvmem_register(struct rtc_device *rtc,
 	return PTR_ERR_OR_ZERO(nvmem);
 }
 EXPORT_SYMBOL_GPL(devm_rtc_nvmem_register);
+   
