@@ -87,7 +87,7 @@ class FileProcessor:
         
     def write_lod(self, list_of_dic, output_file):
         if not list_of_dic:
-            print("The list of dictionaries is empty, cannot log into the csv file.")
+            print("write_lod_Error: The list of dictionaries is empty, cannot log into the csv file.")
             return False
         # Sort the lines of code of each file in ascending order
         sorted_lod= sorted(list_of_dic, key=lambda x: x[f'{self.LOC_KEY}'])
@@ -98,51 +98,56 @@ class FileProcessor:
             writer = csv.DictWriter(csvfile, fieldnames = field_names )
             writer.writeheader()
             writer.writerows(sorted_lod)
-        print("Field names:", field_names)
-        print(f"Driver file information successfully written to {output_file}")       
         return True
     
     # log the information of all driver files in the Linux directory
-    def log_file(self, path2folder, file_type, output_file):
-        file_info = []
-        if os.path.isdir(path2folder):
-            print(f"Path Checked: {path2folder}\n")
-            # Find the lines of code and remove the comments from each file in the target directory
-            driver_name = ""
-            for root, _, files in os.walk(path2folder):
-                driver_name = os.path.relpath(root, path2folder).split(os.sep)[0]
-                for file in files:
-                    # Extract specified file type
-                    if os.path.splitext(file)[1] == file_type:
-                        # Get the path to the file
-                        path2file = os.path.join(root, file)
-                        print(f"Path to file: {path2file}")
-                        
-                        # Remove comments in the file
-                        if file_type != ".o":
-                            processed_file = self.remove_comments(path2file)
-                        
-                            # print("clean code: \n", processedFile)
-                        
-                            # Get the lines of code in the file
-                            split_by_line = processed_file.split("\n")  # Split the code into lines
-                            line_of_code = len(split_by_line)
-                        else:
-                            # If the file is an object file, set the lines of code to 0
-                            line_of_code = 0
-                        # Append the file information to the list of Dictionaries
-                        file_info.append({f'{self.DRIVER_NAME_KEY}': driver_name, 
-                                          f'{self.PATH_KEY}': path2file, 
-                                          f'{self.FILE_KEY}': file, 
-                                          f'{self.LOC_KEY}': line_of_code
-                                         })
-            result = self.write_lod(file_info, output_file)
-            if not result:
-                print("Failed to write driver file information.")
-            
-        else:
-            print(f"ERROR: {path2folder} not found")
+    def log_file(self, path2driver, file_type, output_file):
+        
+        if not os.path.isdir(path2driver):
+            print(f"log_file_ERROR: {path2driver} not found")
             return False
+        
+        # Find the lines of code and remove the comments from each file in the target directory
+        file_info = []
+        for root, dirs, files in os.walk(path2driver):
+            for file in files:
+                # Extract specified file type
+                if os.path.splitext(file)[1] == file_type:
+                    # Get the path to the file
+                    path2file = os.path.join(root, file)
+                    # print(f"Path to file: {path2file}")
+                    
+                    # Remove comments in the file
+                    if file_type != ".o":
+                        processed_file = self.remove_comments(path2file)
+                        # print("clean code: \n", processedFile)
+                        split_by_line = processed_file.split("\n")  # Split the code into lines
+                        line_of_code = len(split_by_line)
+                    else:
+                        line_of_code = 0
+                    
+                    # Extract the driver name based on the path
+                    relative_path = os.path.relpath(path2file, path2driver)
+                    split_path = relative_path.split(os.sep)
+                    if len(split_path) > 1:
+                        driver_name = split_path[0]
+                    
+                    # print(f"Driver Name: {driver_name}")
+                    # print(f"Path to File: {path2file}")
+                    # print(f"Lines of Code: {line_of_code}")
+                    
+                    
+                    # Append the file information to the list of Dictionaries
+                    file_info.append({f'{self.DRIVER_NAME_KEY}': driver_name, 
+                                        f'{self.PATH_KEY}': path2file, 
+                                        f'{self.FILE_KEY}': file, 
+                                        f'{self.LOC_KEY}': line_of_code
+                                        })
+            
+        result = self.write_lod(file_info, output_file)
+        if not result:
+            return False
+        return True
     
     
 
@@ -163,8 +168,8 @@ class FileProcessor:
                     print(f"Driver Name: {driver_name}, Path: {row[self.PATH_KEY]}, Total LOC: {loc}")
 
             # Print LOC
-            for driver, loc in file_info.items():
-                print(f"Driver Name: {driver}, Total LOC: {loc}")
+            # for driver, loc in file_info.items():
+            #     print(f"Driver Name: {driver}, Total LOC: {loc}")
             
             # Write summary to a CSV file
             field_names = [self.DRIVER_NAME_KEY, self.LOC_KEY]                
@@ -175,9 +180,8 @@ class FileProcessor:
                 writer.writeheader()
                 writer.writerows(sorted_data)
 
-            print(f"Driver LOC data successfully written to {output_file}")
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"count_driver_loc_Error: {e}")
 
     # Get the headers from a C file
     def get_headers(self, file):
@@ -207,7 +211,6 @@ class FileProcessor:
         for header in self.get_headers(file_path):
             if header not in self.get_headers(self.helper_file_path):
                 unique_headers.append(header)
-                print(f"Header {header} is not present in the header helper")
         # Write the unique headers to the header helper file
         with open(self.helper_file_path, 'r') as f:
             helper_content = f.readlines()
@@ -218,7 +221,6 @@ class FileProcessor:
                     break
         with open(self.helper_file_path, 'w') as f:
             f.writelines(helper_content)            
-        print("Header helper file updated")
         
     
     # Get the target driver header files and copy them to the new directory according to the file location in the csv file
@@ -260,7 +262,9 @@ if __name__ == '__main__':
     file = FileProcessor()
 
 
-    path2csv = "/home/wsh/test/driver_summary.csv"
+    # path2csv = "/home/wsh/test/driver_summary.csv"
     path2folder = "/home/wsh/linux/drivers"
-    driver_name = "rtc"
-    file.get_driver_header(path2csv, path2folder, driver_name)
+    # driver_name = "rtc"
+    # file.get_driver_header(path2csv, path2folder, driver_name)
+    
+    file.log_file(path2folder, ".o", "summary_o.csv")

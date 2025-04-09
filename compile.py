@@ -137,68 +137,72 @@ class compilation:
                 print(f"Compilation succeeded after {attempt} attempts.")
                 return result
             
-    def get_obj_files(self, linux_path, driver_name, file_type, output_csv):
-        kernel_driver_path = os.path.join(linux_path, driver_name)
-        class_file  = FileProcessor()
-        result = class_file.log_file(kernel_driver_path, file_type, output_csv)
-        result_ = class_file.log_file(linux_path, ".c", "summary.csv")
-        if result and result_== True:
-            file_info = []
-            print(f"Object files logged successfully to {output_csv}.")
+    def get_obj_files(self, path2driver, driver_name, output_csv):
+        class_file = FileProcessor()
+
+        # Log object files and summary
+        result_c = class_file.log_file(path2driver, ".c", "summary.csv")
+        result_o = class_file.log_file(path2driver, ".o", output_csv)
+
+        if not (result_c and result_o):
+            print("get_obj_files_ERROR: Missing CSV files.")
+            return False
+        
+        file_info = []
+
+        with open("summary.csv", 'r') as summary_info:
+            summary_data = list(csv.DictReader(summary_info))
+            # print(summary_data)
             
-            # Replace the Line of code with the actual value
-            with open("summary.csv", 'r') as summary_info:
-                summary_reader = csv.DictReader(summary_info)
-            with open(output_csv, 'r') as obj_info:
-                obj_reader = csv.DictReader(obj_info)
-            for row in obj_reader:
-                obj_basename = os.path.basename(row[class_file.PATH_KEY])
-                obj_driver_name = driver_name
-                for row in summary_reader:
-                    summary_basename = os.path.basename(row[class_file.PATH_KEY])
-                    summary_driver_name = row[class_file.DRIVER_NAME_KEY]
-                    if obj_basename == summary_basename and obj_driver_name == summary_driver_name:
-                        loc = int(row[class_file.LOC_KEY])
-                        driver_name = row[class_file.DRIVER_NAME_KEY]
-                        file_path = row[class_file.PATH_KEY]
-                        file_name = row[class_file.FILE_KEY]
+        with open(output_csv, 'r') as obj_info:
+            obj_reader = csv.DictReader(obj_info)
+            for obj_row in obj_reader:
+                obj_basename = os.path.basename(obj_row[class_file.PATH_KEY])[:-2]
+                obj_driver_name = obj_row[class_file.DRIVER_NAME_KEY]
+                
+                for summary_row in summary_data:
+                    summary_basename = os.path.basename(summary_row[class_file.PATH_KEY])[:-2]
+                    summary_driver_name = summary_row[class_file.DRIVER_NAME_KEY]
+                    
+                    if obj_basename == summary_basename and obj_driver_name == driver_name and summary_driver_name == driver_name:
+                        loc = int(summary_row[class_file.LOC_KEY])
+                        file_path = summary_row[class_file.PATH_KEY]
+                        file_name = summary_row[class_file.FILE_KEY]
+
                         file_info.append({
-                            "Driver_Name": driver_name,
+                            "Driver_Name": summary_driver_name,
                             "Path": file_path,
                             "File_Name": file_name,
                             "Line_of_Code": loc
                         })
-                        # print(f"Driver Name: {driver_name}, Path: {file_path}, File Name: {file_name} Total LOC: {loc}")
-            # Write the file info to the CSV file
-            result = class_file.write_lod(file_info, output_csv)
-            if not result:
-                return False
-            
-            print(f"Object file info logged successfully to {output_csv}.")
-            return True
-        
-        else:
-            print("Error: Failed to log object files.")
+
+        # print("File info:", file_info)
+
+        # Write updated file info to the output CSV
+        result = class_file.write_lod(file_info, output_csv)
+        if not result:
             return False
+        else:
+            print(f"File info written to {output_csv}")
+            return True
+
+                    
                             
 if __name__ == "__main__":
     driver_name = "rtc"
-    linux_path = "/home/wsh/linux"
-    kernel_driver_path = os.path.join(linux_path, driver_name)
-    print(f"Kernel driver path: {kernel_driver_path}")
+    path2driver = "/home/wsh/linux/drivers"
     
     # Log compatible kernel C files into a CSV file"
-    file_type = ".o"
     output_csv = "obj_files.csv"
     class_file  = FileProcessor()
     class_compilation = compilation()
-    result = class_compilation.get_obj_files(linux_path, driver_name, file_type, output_csv)
+    result = class_compilation.get_obj_files(path2driver, driver_name, output_csv)
     
     if result is True:
         # Replace the kernel driver path and Rust file path with actual values
-    #     rust_file_path = "/home/wsh/test/rtc"
-    #     linux_path = "/home/wsh/linux"
-    #     rust_files = class_file.list_files(rust_file_path, ".rs")
+        rust_file_path = "/home/wsh/test/rtc"
+        linux_path = "/home/wsh/linux"
+        rust_files = class_file.list_files(rust_file_path, ".rs")
         
     
     # print(class_compilation.COMPILATION_ERROR)
