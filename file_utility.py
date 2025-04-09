@@ -42,7 +42,7 @@ class FileProcessor:
                     path2file = os.path.join(root, file_name)
                     file_path.append(path2file)
         return file_path
-    
+        
     # Remove comments from a file
     def remove_comments(self, file):
         # Check if `file` is a valid file path or raw content
@@ -86,12 +86,11 @@ class FileProcessor:
             return None
     
     # log the information of all driver files in the Linux directory
-    def log_file(self, path2folder):
+    def log_file(self, path2folder, file_type, output_file):
         file_info = []
         if os.path.isdir(path2folder):
             print(f"Path Checked: {path2folder}\n")
             # Find the lines of code and remove the comments from each file in the target directory
-            file_type = ".c"
             driver_name = ""
             for root, _, files in os.walk(path2folder):
                 driver_name = os.path.relpath(root, path2folder).split(os.sep)[0]
@@ -122,14 +121,17 @@ class FileProcessor:
                 # Get the fieldnames of the dictionary
                 field_names = sorted_lod[0].keys()
                 # Log information into a CSV file
-                with open("driver_summary.csv", 'w', newline='') as csvfile:
+                with open(f"{output_file}", 'w', newline='') as csvfile:
                     writer = csv.DictWriter(csvfile, fieldnames = field_names )
                     writer.writeheader()
                     writer.writerows(sorted_lod)
                 print("Field names:", field_names)
-                print("Driver file information successfully written to 'driver_file.csv'")            
+                print(f"Driver file information successfully written to {output_file}")       
+            else:
+                print("The list of dictionaries is empty, cannot log into the csv file.")
+                return None     
         else:
-            print("The list of dictionaries is empty.")
+            print(f"ERROR: {path2folder} not found")
             return None
 
 
@@ -206,6 +208,7 @@ class FileProcessor:
         with open(self.helper_file_path, 'w') as f:
             f.writelines(helper_content)            
         print("Header helper file updated")
+        
     
     # Get the driver information and copy the files in the target driver to the new directory
     def get_driver_info(self, path2csv, path2folder, driver_name):
@@ -215,7 +218,7 @@ class FileProcessor:
         headers = []
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
         if not os.path.isfile(path2csv):
-            self.log_file(path2folder)
+            self.log_file(path2folder, ".c", "summary.csv")
             self.count_driver_loc(path2csv)
         with open(path2csv, 'r') as info:
             file_info = csv.DictReader(info)

@@ -1,6 +1,7 @@
 import os
 from file_utility import FileProcessor
 import gpt_translation
+
 class CodeTranslator:
     FILE_TYPE = ".c"
     
@@ -41,8 +42,7 @@ class CodeTranslator:
             print(f"ERROR: {path2folder} not found")
             return False
 
-
 if __name__ == "__main__":
     translator = CodeTranslator()
-    path2folder = "/home/wsh/test/connector"
+    path2folder = "/home/wsh/test/rtc"
     print(translator.translate(path2folder))

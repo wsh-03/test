@@ -6,7 +6,7 @@ from gpt import prompt2gpt
 import shutil
 
 class compilation:
-    compilation_errors = False
+    COMPILATION_ERROR = False
     
     def remove_file(self, rust_path, c_path, compilation_errors):
         if compilation_errors == False:
@@ -54,7 +54,7 @@ class compilation:
             }
     
         # Run the make command to compile the Linux kernel
-        compile_command = f"make -C {linux_path} LLVM=1 ARCH=x86_64"
+        compile_command = f"make -C {linux_path} LLVM=1"
         try:
             result = subprocess.run(
                 compile_command,
@@ -135,18 +135,39 @@ class compilation:
             if result.get("status") == "success":
                 print(f"Compilation succeeded after {attempt} attempts.")
                 return result
-        
+            
+    def get_obj_files(self, kernel_driver_path, file_type, output_csv):
+        class_file  = FileProcessor()
+        result = class_file.log_file(kernel_driver_path, file_type, output_csv)
+        if result is not None:
+            print(f"Object files logged successfully to {output_csv}.")
+            return True
+        else:
+            print("Error: Failed to log object files.")
+            return False
+                            
 if __name__ == "__main__":
-    # # Replace the kernel driver path and Rust file path with actual values
-    # kernel_driver_path = "/home/wsh/linux/drivers/rtc"
-    # rust_file_path = "/home/wsh/test/rtc"
-    # linux_path = "/home/wsh/linux"
+    
+    kernel_driver_path = "/home/wsh/linux/drivers/rtc"
+    
+    # Log compatible kernel C files into a CSV file"
+    file_type = ".o"
+    output_csv = "Obj_files.csv"
+    class_file  = FileProcessor()
+    class_compilation = compilation()
+    result = class_compilation.get_obj_files(kernel_driver_path, file_type, output_csv)
+    if result is True:
+        # Replace the kernel driver path and Rust file path with actual values
+        rust_file_path = "/home/wsh/test/rtc"
+        linux_path = "/home/wsh/linux"
+        rust_files = class_file.list_files(rust_file_path, ".rs")
         
-    # class_compilation  = compilation()
-    # rust_files = class_compilation.class_file.list_files(rust_file_path, ".rs")
+    
+    # print(class_compilation.COMPILATION_ERROR)
+    
     # for file in rust_files:
-    #     class_compilation.compilation_errors = False
-    #     class_compilation.replace_file(kernel_driver_path, file, class_compilation.compilation_errors)
+    #     class_compilation.COMPILATION_ERROR = False
+    #     class_compilation.replace_file(kernel_driver_path, file, class_compilation.COMPILATION_ERROR)
     #     # Compile the Linux kernel
     #     compile_result = class_compilation.compile_linux(linux_path)
     #     # Write the results to a JSON file
@@ -158,6 +179,8 @@ if __name__ == "__main__":
     #     except Exception as e:
     #         print(f"Failed to write JSON file: {e}")
     
-    class_compilation = compilation()
-    linux_path = "/home/wsh/linux"
-    print(compile_result := class_compilation.compile_linux(linux_path))
+    # print(class_compilation.COMPILATION_ERROR)
+    
+    # class_compilation = compilation()
+    # linux_path = "/home/wsh/linux"
+    # print(compile_result := class_compilation.compile_linux(linux_path))
