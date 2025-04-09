@@ -5,10 +5,10 @@ import re
 import os 
 
 class FileProcessor:
-    DRIVER_NAME_KEY = "Driver Name"
-    LOC_KEY = "Line of Code"
+    DRIVER_NAME_KEY = "Driver_Name"
+    LOC_KEY = "Line_of_Code"
     PATH_KEY = "Path"
-    FILE_KEY = "File"
+    FILE_KEY = "File_Name"
     home_dir = os.environ.get("HOME")
     helper_file_path = f"{home_dir}/linux/rust/bindings/bindings_helper.h"
     
@@ -84,6 +84,23 @@ class FileProcessor:
             return file_name
         else:
             return None
+        
+    def write_lod(self, list_of_dic, output_file):
+        if not list_of_dic:
+            print("The list of dictionaries is empty, cannot log into the csv file.")
+            return False
+        # Sort the lines of code of each file in ascending order
+        sorted_lod= sorted(list_of_dic, key=lambda x: x[f'{self.LOC_KEY}'])
+        # Get the fieldnames of the dictionary
+        field_names = sorted_lod[0].keys()
+        # Log information into a CSV file
+        with open(f"{output_file}", 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames = field_names )
+            writer.writeheader()
+            writer.writerows(sorted_lod)
+        print("Field names:", field_names)
+        print(f"Driver file information successfully written to {output_file}")       
+        return True
     
     # log the information of all driver files in the Linux directory
     def log_file(self, path2folder, file_type, output_file):
@@ -119,31 +136,18 @@ class FileProcessor:
                                           f'{self.FILE_KEY}': file, 
                                           f'{self.LOC_KEY}': line_of_code
                                          })
-    
-            # If the list of dictionaries is not empty, sort the lines of code and log the information into a CSV file
-            if file_info:          
-                # Sort the lines of code of each file in ascending order
-                sorted_lod= sorted(file_info, key=lambda x: x[f'{self.LOC_KEY}'])
-                # Get the fieldnames of the dictionary
-                field_names = sorted_lod[0].keys()
-                # Log information into a CSV file
-                with open(f"{output_file}", 'w', newline='') as csvfile:
-                    writer = csv.DictWriter(csvfile, fieldnames = field_names )
-                    writer.writeheader()
-                    writer.writerows(sorted_lod)
-                print("Field names:", field_names)
-                print(f"Driver file information successfully written to {output_file}")       
-                return True
-            elif len(file_info) == 0:
-                print("The list of dictionaries is empty, cannot log into the csv file.")
-                return False     
+            result = self.write_lod(file_info, output_file)
+            if not result:
+                print("Failed to write driver file information.")
+            
         else:
             print(f"ERROR: {path2folder} not found")
             return False
+    
+    
 
-
-    # Count the lines of code for each driver and log the information in a CSV file
-    def count_driver_loc(self, path2csv):
+    # Summary the lines of code of each file in a driver and log the information into a CSV file
+    def count_driver_loc(self, path2csv, output_file):
         if not os.path.isfile(path2csv):
             return None
         # Store LOC in a single dictionary
@@ -166,12 +170,12 @@ class FileProcessor:
             field_names = [self.DRIVER_NAME_KEY, self.LOC_KEY]                
             data = [{f"{self.DRIVER_NAME_KEY}": driver, f"{self.LOC_KEY}": loc} for driver, loc in file_info.items()]
             sorted_data = sorted(data, key=lambda x: x[self.LOC_KEY])
-            with open("driver_loc_summary.csv", 'w', newline='') as summary_file:
+            with open(f"{output_file}", 'w', newline='') as summary_file:
                 writer = csv.DictWriter(summary_file, fieldnames=field_names)
                 writer.writeheader()
                 writer.writerows(sorted_data)
 
-            print("Driver LOC data successfully written to 'driver_loc_summary.csv'")
+            print(f"Driver LOC data successfully written to {output_file}")
         except Exception as e:
             print(f"Error: {e}")
 
@@ -225,9 +229,10 @@ class FileProcessor:
         
         headers = []
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
+        output_csv = "driver_loc_summary.csv"
         if not os.path.isfile(path2csv):
             self.log_file(path2folder, ".c", "summary.csv")
-            self.count_driver_loc(path2csv)
+            self.count_driver_loc(path2csv, output_csv)
         with open(path2csv, 'r') as info:
             file_info = csv.DictReader(info)
             for row in file_info:
