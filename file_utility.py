@@ -99,14 +99,20 @@ class FileProcessor:
                     if os.path.splitext(file)[1] == file_type:
                         # Get the path to the file
                         path2file = os.path.join(root, file)
+                        print(f"Path to file: {path2file}")
+                        
                         # Remove comments in the file
-                        processed_file = self.remove_comments(path2file)
+                        if file_type != ".o":
+                            processed_file = self.remove_comments(path2file)
                         
-                        # print("clean code: \n", processedFile)
+                            # print("clean code: \n", processedFile)
                         
-                        # Get the lines of code in the file
-                        split_by_line = processed_file.split("\n")  # Split the code into lines
-                        line_of_code = len(split_by_line)
+                            # Get the lines of code in the file
+                            split_by_line = processed_file.split("\n")  # Split the code into lines
+                            line_of_code = len(split_by_line)
+                        else:
+                            # If the file is an object file, set the lines of code to 0
+                            line_of_code = 0
                         # Append the file information to the list of Dictionaries
                         file_info.append({f'{self.DRIVER_NAME_KEY}': driver_name, 
                                           f'{self.PATH_KEY}': path2file, 
@@ -127,12 +133,13 @@ class FileProcessor:
                     writer.writerows(sorted_lod)
                 print("Field names:", field_names)
                 print(f"Driver file information successfully written to {output_file}")       
-            else:
+                return True
+            elif len(file_info) == 0:
                 print("The list of dictionaries is empty, cannot log into the csv file.")
-                return None     
+                return False     
         else:
             print(f"ERROR: {path2folder} not found")
-            return None
+            return False
 
 
     # Count the lines of code for each driver and log the information in a CSV file
@@ -210,10 +217,11 @@ class FileProcessor:
         print("Header helper file updated")
         
     
-    # Get the driver information and copy the files in the target driver to the new directory
-    def get_driver_info(self, path2csv, path2folder, driver_name):
+    # Get the target driver header files and copy them to the new directory according to the file location in the csv file
+    def get_driver_header(self, path2csv, path2folder, driver_name):
         if not os.path.isdir(path2folder):
-            return None
+            print(f"ERROR: {path2folder} not found")
+            return False
         
         headers = []
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
@@ -240,6 +248,7 @@ class FileProcessor:
                 f.write(header + "\n")
         # Update the header helper file
         self.update_header_helper(header_output)
+        return True
         
 
 if __name__ == '__main__':
@@ -249,4 +258,4 @@ if __name__ == '__main__':
     path2csv = "/home/wsh/test/driver_summary.csv"
     path2folder = "/home/wsh/linux/drivers"
     driver_name = "rtc"
-    file.get_driver_info(path2csv, path2folder, driver_name)
+    file.get_driver_header(path2csv, path2folder, driver_name)

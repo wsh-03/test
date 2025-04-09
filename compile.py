@@ -136,31 +136,39 @@ class compilation:
                 print(f"Compilation succeeded after {attempt} attempts.")
                 return result
             
-    def get_obj_files(self, kernel_driver_path, file_type, output_csv):
+    def get_obj_files(self, linux_path, driver_name, file_type, output_csv):
+        kernel_driver_path = os.path.join(linux_path, driver_name)
         class_file  = FileProcessor()
         result = class_file.log_file(kernel_driver_path, file_type, output_csv)
-        if result is not None:
+        result_ = class_file.log_file(linux_path, ".c", "summary.csv")
+        if result and result_== True:
             print(f"Object files logged successfully to {output_csv}.")
+            # Replace the Line of code with the actual value
+            
+            
             return True
         else:
             print("Error: Failed to log object files.")
             return False
                             
 if __name__ == "__main__":
-    
-    kernel_driver_path = "/home/wsh/linux/drivers/rtc"
+    driver_name = "rtc"
+    linux_path = "/home/wsh/linux"
+    kernel_driver_path = os.path.join(linux_path, driver_name)
+    print(f"Kernel driver path: {kernel_driver_path}")
     
     # Log compatible kernel C files into a CSV file"
     file_type = ".o"
     output_csv = "Obj_files.csv"
     class_file  = FileProcessor()
     class_compilation = compilation()
-    result = class_compilation.get_obj_files(kernel_driver_path, file_type, output_csv)
+    result = class_compilation.get_obj_files(linux_path, driver_name, file_type, output_csv)
+    
     if result is True:
         # Replace the kernel driver path and Rust file path with actual values
-        rust_file_path = "/home/wsh/test/rtc"
-        linux_path = "/home/wsh/linux"
-        rust_files = class_file.list_files(rust_file_path, ".rs")
+    #     rust_file_path = "/home/wsh/test/rtc"
+    #     linux_path = "/home/wsh/linux"
+    #     rust_files = class_file.list_files(rust_file_path, ".rs")
         
     
     # print(class_compilation.COMPILATION_ERROR)
