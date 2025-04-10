@@ -48,7 +48,7 @@ def prompt2gpt(prompt, fix_error):
             messages = [
                     {
                         "role": "system", 
-                        "content": "You are a Rust systems programmer for the Linux kernel. You will be provided with Rust code and its compilation errors. Your task is to correct the Rust code based on the provided compiler feedback."
+                        "content": "You are a Rust systems developer for the Linux kernel. You will be provided with Rust code and its compilation errors. Your task is to correct the Rust code based on the provided compiler feedback."
                     },
                 
                     {

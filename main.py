@@ -1,4 +1,7 @@
-import os
+import translation.translate as translate
 
-print(os.path.join(os.getcwd(), "rtc", f"d_test"))
+path2folder = "/home/wsh/test/tc"
+translate.CodeTranslator().translate(path2folder)
+
+
 
