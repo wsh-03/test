@@ -4,13 +4,17 @@ import shutil
 import re
 import os 
 
+from compile import compilation
+
 class FileProcessor:
+    
     DRIVER_NAME_KEY = "Driver_Name"
     LOC_KEY = "Line_of_Code"
     PATH_KEY = "Path"
     FILE_KEY = "File_Name"
     home_dir = os.environ.get("HOME")
     helper_file_path = f"{home_dir}/linux/rust/bindings/bindings_helper.h"
+    
     
     # Retrieve the file content
     def get_file_info(self, path2file, file_type):
@@ -24,10 +28,11 @@ class FileProcessor:
                 file_content = f.read()
                 return file_content, file_name
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"get_file_info_Error: {e}")
             return None, None
         
         return None, None
+    
     
     # List the full path of a file in the target directory
     def list_files(self, path2folder, file_type):
@@ -42,7 +47,8 @@ class FileProcessor:
                     path2file = os.path.join(root, file_name)
                     file_path.append(path2file)
         return file_path
-        
+    
+    
     # Remove comments from a file
     def remove_comments(self, file):
         # Check if `file` is a valid file path or raw content
@@ -72,7 +78,8 @@ class FileProcessor:
     
         return code
     
-    def get_base_name(self, log_message):
+    
+    def extract_base_name(self, log_message):
         # Define the regex pattern to match the RUSTC line
         pattern = r"RUSTC\s+(.*\.o)"
         match = re.search(pattern, log_message)
@@ -85,6 +92,7 @@ class FileProcessor:
         else:
             return None
         
+    
     def write_lod(self, list_of_dic, output_file):
         if not list_of_dic:
             print("write_lod_Error: The list of dictionaries is empty, cannot log into the csv file.")
@@ -99,6 +107,7 @@ class FileProcessor:
             writer.writeheader()
             writer.writerows(sorted_lod)
         return True
+    
     
     # log the information of all driver files in the Linux directory
     def log_file(self, path2driver, file_type, output_file):
@@ -224,38 +233,54 @@ class FileProcessor:
         
     
     # Get the target driver header files and copy them to the new directory according to the file location in the csv file
-    def get_driver_header(self, path2csv, path2folder, driver_name):
-        if not os.path.isdir(path2folder):
-            print(f"ERROR: {path2folder} not found")
+    def get_driver_header(self, path2linux, driver_name):
+        
+        if not os.path.isdir(path2linux):
+            print(f"ERROR: {path2linux} not found")
             return False
         
+        class_compilation = compilation()
+        
         headers = []
+        obj_csv = f"object_{driver_name}.csv"
         header_output = f"{self.home_dir}/test/{driver_name}/{driver_name}_headers.h"
         output_csv = "driver_loc_summary.csv"
-        if not os.path.isfile(path2csv):
-            self.log_file(path2folder, ".c", "summary.csv")
-            self.count_driver_loc(path2csv, output_csv)
-        with open(path2csv, 'r') as info:
-            file_info = csv.DictReader(info)
-            for row in file_info:
-                if row[self.DRIVER_NAME_KEY] == f'{driver_name}' and int(row[self.LOC_KEY]) <= 200:
-                    output_dir = os.path.join(os.path.dirname(path2csv), driver_name, f"d_{row[self.FILE_KEY]}")
+        
+        if not os.path.isfile("summary.csv"):
+            self.log_file(path2linux, ".c", "summary.csv")
+            self.count_driver_loc("summary.csv", output_csv)
+            
+        path2driver = os.path.join(path2linux, driver_name)
+        class_compilation.get_obj_files(path2driver, driver_name, obj_csv)
+        
+        with open(obj_csv, 'r') as obj_info:
+            obj_reader = csv.DictReader(obj_info)
+            for obj_row in obj_reader:
+                
+                obj_driver_name = obj_row[self.DRIVER_NAME_KEY]
+                if obj_driver_name == driver_name:
+                    
+                    output_dir = os.path.join(os.getcwd(), driver_name, f"d_{obj_row[self.FILE_KEY]}")
+                    
                     # Create the directory and Copy the file to the new directory according to the file location in csv
                     os.makedirs(output_dir, exist_ok=True)
-                    print("Path Created: ", output_dir)
-                    shutil.copy(row[f'{self.PATH_KEY}'], output_dir)
+                    shutil.copy(obj_row[f'{self.PATH_KEY}'], output_dir)
+                    
                     # Collect only unique headers in the C files
-                    for header in self.get_headers(row[f'{self.PATH_KEY}']):
+                    for header in self.get_headers(obj_row[f'{self.PATH_KEY}']):
                         if header not in headers:
                             headers.append(header)
+                            
         print("Headers: ", headers)
+        
         # Write all unique headers to a C file in the directory
         with open(header_output, 'w') as f:
             for header in headers:
                 f.write(header + "\n")
-        # Update the header helper file
+        # Update it to the header helper file
         self.update_header_helper(header_output)
         return True
+        
         
 
 if __name__ == '__main__':

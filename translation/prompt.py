@@ -1,8 +1,8 @@
 # openai conda environment
 # python 3.6.9
-from openai import OpenAI
+from translation.prompt import OpenAI
 import os
-from file_utility import FileProcessor
+from preprocessing.file_utility import FileProcessor
 
 FileProcessor = FileProcessor()
 def generate_prompt(path2file, error):
@@ -38,8 +38,8 @@ def generate_prompt(path2file, error):
     clean_code = file_class.remove_comments(file_content)
     
     message = f"""
-            The Linux kernel runs on a Ubuntu x86-64 machine, where {file_name} is located under the {driver_name} directory.
-            Original C file: "{clean_code}"
+            The Linux kernel runs on a x86_64 machine, where the target {file_name} file belongs to {driver_name} in the Linux kernel.
+            Target C file: "{clean_code}"
             Error message: "{error}"
             """
     return task, message

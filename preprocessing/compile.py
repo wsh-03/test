@@ -1,47 +1,63 @@
 import subprocess
 import os
 import json
-from file_utility import FileProcessor
-from gpt import prompt2gpt
-import shutil
+from preprocessing.file_utility import FileProcessor
 import csv
 
 class compilation:
     COMPILATION_ERROR = False
     
     def remove_file(self, rust_path, c_path, compilation_errors):
-        if compilation_errors == False:
-            os.remove(c_path)
-            os.rename(c_path, rust_path)
-            print(f"Replaced {c_path} with {rust_path}")
+        if os.path.isfile(c_path) and os.path.isfile(rust_path):
+            if compilation_errors == False:
+                # Remove the C file and replace the Rust with the C file 
+                os.remove(c_path)
+                os.rename(c_path, rust_path)
+                print(f"Replaced {c_path} with {rust_path}")
+                return True
+            elif compilation_errors == True:
+                # Remove the Rust file and replace the C with Rust file 
+                os.remove(rust_path)
+                os.rename(rust_path, c_path)
+                print(f"Replaced {rust_path} with {c_path}")
+                return True
         else:
-            os.remove(rust_path)
-            os.rename(rust_path, c_path)
-            print(f"Replaced {rust_path} with {c_path}")
+            raise FileNotFoundError(f"remove_file_Error: {c_path} or {rust_path} file not found")
+        return False
     
-    def replace_file(self, kernel_driver_path, rust_file_path):
+    
+    def replace_file(self, target_driver_dir, rs_dir, compilation_errors):
         class_file = FileProcessor()
-        if not os.path.exists(kernel_driver_path):
-            raise FileNotFoundError(f"The kernel driver path {kernel_driver_path} does not exist.")
-        if not os.path.exists(rust_file_path):
-            raise FileNotFoundError(f"The Rust file path {rust_file_path} does not exist.")
-
-        # List all file paths in the target directory
-        kernel_files = class_file.list_files(kernel_driver_path, ".c")
-        # print("Files in the kernel driver directory:", kernel_files)
-        # Replace the .c file with the .rs file
-        for c_file_path in kernel_files:
-            # Retrieve the base name of the C file
-            c_file_name = os.path.basename(c_file_path)
-            c_base_name = os.path.splitext(c_file_name)[0]
-            # Retrieve the base name of the Rust file
-            rs_file_name = os.path.basename(rust_file_path)
-            rs_base_name = os.path.splitext(rs_file_name)[0]
-            if c_base_name == rs_base_name:
-                self.remove_file(rust_file_path, c_file_path, self.compilation_errors)
-                break
         
-
+        if len(target_driver_dir) or len(rs_dir) == 0:
+            raise ValueError("The driver path or rust file path is empty.")
+        elif not os.path.exists(target_driver_dir):
+            raise FileNotFoundError(f"The kernel driver path '{target_driver_dir}' does not exist.")
+        elif not os.path.exists(rs_dir):
+            raise FileNotFoundError(f"The Rust file path '{rs_dir}' does not exist.")
+        
+        # List all file paths in the target directory
+        rs_files = class_file.list_files(rs_dir, ".rs")
+        c_files = class_file.list_files(target_driver_dir, ".c")
+        # print("Files in the kernel driver directory:", kernel_files)
+            
+        # Replace the .c file with the .rs file
+        for rs_file_path in rs_files:
+            # Extract the base name from Rust file
+            rs_file_name = os.path.basename(rs_file_path)
+            rs_base_name = os.path.splitext(rs_file_name)[0]
+                
+            for c_file_path in c_files:
+                # Extract the base name from C file 
+                c_file_name = os.path.basename(c_file_path)
+                c_base_name = os.path.splitext(c_file_name)[0]
+                    
+                if c_base_name == rs_base_name:
+                    # Replace the source C file with the target Rust file based on the compilation error
+                    self.remove_file(c_file_path, rs_file_path, compilation_errors)
+        return True            
+                
+        
     def compile_linux(self, linux_path):
         # Change directory to the Linux kernel source directory
         if not os.path.exists(linux_path):
@@ -84,58 +100,7 @@ class compilation:
                 "status": "failure",
                 "error": str(e) 
                 }
-    
-    def fix_compilation_errors(self, compilation_error, linux_path, rust_folder, target_driver_folder, driver_name, max_attempts):
-        class_file = FileProcessor()
-        c_file_paths = class_file.list_files(rust_folder, ".c")
-        kernel_rust_file_paths = class_file.list_files(target_driver_folder, ".rs")
-        file_name = class_file.extract_file_name(compilation_error.get("stdout"))
-        c_code = ""
-        rust_code = ""
-        target_file_path = ""
-        result = {}
-    
-        # Find the C file and Rust file that match the provided file name
-        for c_file_path in c_file_paths:
-            c_base_name = os.path.splitext(os.path.basename(c_file_path))[0]
-            if c_base_name == file_name:
-                c_code = class_file.remove_comments(c_file_path)
-                break
-        for rust_file_path in kernel_rust_file_paths:
-            rust_base_name = os.path.splitext(os.path.basename(rust_file_path))[0]
-            if rust_base_name == file_name:
-                rust_code = class_file.remove_comments(rust_file_path)
-                target_file_path = rust_file_path
-                break
-    
-        # Prompt to correct the Rust code based on the provided compilation error
-    
-        prompt = (
-                    f"Your task is to correct the Rust code with given compilation errors, always apply your corrections to the code and provide the corrected Rust code without comments. Rust code: ```{rust_code}```; Compilation error: ```{compilation_error.get('stderr')}``` "
-                )
-        # Attempt to fix the error using the provided prompt
-        for attempt in range(1, max_attempts + 1):
-            response = prompt2gpt(prompt, True)
-            # Remove comments from the response
-            clean_code = class_file.remove_comments(response)
-            # Write the corrected Rust code to the file
-            print(f"Writing the corrected Rust code to {target_file_path}")
-            with open(target_file_path, 'w') as f:
-                f.write(clean_code)
-            # Compile the Linux kernel
-            print(compilation_error.get("stderr"))
-            if compilation_error.get("stderr") not in result.get("stderr"):
-                compilation_result = self.compile_linux(linux_path)
-                compilation_result["attempts"] = attempt
-            result.update(compilation_result)
-            # Write the results to a JSON file
-            with open(f"{driver_name}.json", 'w') as json_file:
-                json.dump(result, json_file, indent=4)
-                print(f"Compilation info written to {driver_name}.json")
-
-            if result.get("status") == "success":
-                print(f"Compilation succeeded after {attempt} attempts.")
-                return result
+            
             
     def get_obj_files(self, path2driver, driver_name, output_csv):
         class_file = FileProcessor()
@@ -154,6 +119,7 @@ class compilation:
             summary_data = list(csv.DictReader(summary_info))
             # print(summary_data)
             
+        # Change the object path with actual C file path
         with open(output_csv, 'r') as obj_info:
             obj_reader = csv.DictReader(obj_info)
             for obj_row in obj_reader:
@@ -186,7 +152,7 @@ class compilation:
             print(f"File info written to {output_csv}")
             return True
 
-                    
+
                             
 if __name__ == "__main__":
     driver_name = "rtc"

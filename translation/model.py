@@ -1,6 +1,6 @@
 # openai conda environment
 # python 3.6.9
-from openai import OpenAI
+from translation.prompt import OpenAI
 import os
 
 # question_history = []
