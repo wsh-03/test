@@ -1,7 +1,7 @@
 import subprocess
 import os
 import json
-from preprocessing.file_utility import FileProcessor
+from file_utility import FileProcessor
 import csv
 
 class compilation:

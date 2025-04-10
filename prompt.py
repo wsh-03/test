@@ -1,8 +1,8 @@
 # openai conda environment
 # python 3.6.9
-from translation.prompt import OpenAI
+import OpenAI
 import os
-from preprocessing.file_utility import FileProcessor
+from file_utility import FileProcessor
 
 FileProcessor = FileProcessor()
 def generate_prompt(path2file, error):

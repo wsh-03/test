@@ -4,7 +4,7 @@ import shutil
 import re
 import os 
 
-from compile import compilation
+from compile import compilation 
 
 class FileProcessor:
     
@@ -97,6 +97,7 @@ class FileProcessor:
         if not list_of_dic:
             print("write_lod_Error: The list of dictionaries is empty, cannot log into the csv file.")
             return False
+        
         # Sort the lines of code of each file in ascending order
         sorted_lod= sorted(list_of_dic, key=lambda x: x[f'{self.LOC_KEY}'])
         # Get the fieldnames of the dictionary

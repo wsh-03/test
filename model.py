@@ -1,6 +1,6 @@
 # openai conda environment
 # python 3.6.9
-from translation.prompt import OpenAI
+import OpenAI
 import os
 
 # question_history = []
@@ -20,7 +20,7 @@ def prompt2gpt(prompt, fix_error):
         chat_completion  = client.chat.completions.create(
             messages = [
                 
-                    {
+                    { 
                         "role": "system", 
                         "content": "You are a C to Rust system programming translator for the Linux kernel. You will be provided with C code. Your task is to translate it into equivalent and safer Rust code."
                     },

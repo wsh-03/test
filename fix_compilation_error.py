@@ -1,5 +1,5 @@
-from preprocessing.file_utility import FileProcessor
-from translation.model import prompt2gpt
+from file_utility import FileProcessor
+from model import prompt2gpt
 import os
 import json
 

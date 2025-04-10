@@ -1,13 +1,13 @@
 import os
-import preprocessing.file_utility as preprocessing
-import translation.prompt as translating
+from file_utility import FileProcessor
+import prompt
 
 class CodeTranslator:
     FILE_TYPE = ".c"
     
     def translate(self, path2folder):
         
-        file_class = preprocessing.FileProcessor()
+        file_class = FileProcessor()
         
         # Check if the provided path is a valid directory
         if (os.path.isdir(path2folder)):
@@ -18,13 +18,13 @@ class CodeTranslator:
                     print(os.path.join(dir, file))
                     if file.endswith(self.FILE_TYPE):
                         path2file = os.path.join(dir, file)
-                        file_result = preprocessing.get_file_info(path2file, self.FILE_TYPE)
+                        file_result = file_class.get_file_info(path2file, self.FILE_TYPE)
                         file_content, file_name = file_result
                         
                         if file_content is None and file_name is None:
                             raise Exception("Error encountered during reading file content or retrieving filename.")                                                
                         
-                        translation_result = translating.gpt_translate(file_content, None)
+                        translation_result = prompt.gpt_translate(file_content, None)
                         print(translation_result)
                         
                         # Remove comments
