@@ -3,6 +3,7 @@
 import OpenAI
 import os
 
+
 # question_history = []
 # translation_history = []
 

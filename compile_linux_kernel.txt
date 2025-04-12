@@ -1,24 +1,26 @@
 # Move the to the linux directory
 cd ~/linux
 
-# Modify the .config file to disable  following certificate if applicable ( for Ubuntu machine)
-CONFIG_SYSTEM_TRUSTED_KEYS ""
-CONFIG_SYSTEM_REVOCATION_KEYS ""
+# Configure the kernel to use local config
+# Copy the .config file to the linux kernel
+cp /boot/config-$(uname -r) .config
+make LLVM=1 olddefconfig 
 
 # Modify .config
+nano .config
 CONFIG_SYSTEM_TRUSTED_KEYS=""
 CONFIG_SYSTEM_REVOCATION_KEYS=""
-CONFIG_MODVERSIONS=n 
+
+# Disable module signing
 CONFIG_MODULE_SIG=n
+
+# Enable rust support option
+CONFIG_MODVERSIONS=n 
 
 # Enable Rust if rust supporting is missing, set CONFIG_MODVERSIONS=n 
 make LLVM=1 menuconfig
 make LLVM=1 rustavailable
 
-# Configure the kernel to use local config
-# Copy the .config file to the linux kernel
-cp /boot/config-$(uname -r) .config
-make LLVM=1 olddefconfig 
 
 # Step 2: Build the modpost tool and headers
 make LLVM=1 modules_prepare

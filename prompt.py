@@ -4,8 +4,8 @@ import OpenAI
 import os
 from file_utility import FileProcessor
 
-FileProcessor = FileProcessor()
 def generate_prompt(path2file, error):
+    
     bindgen_import = "use kernel::bindings::*"
     task = f"""
             You are a Rust system programming expert.
@@ -25,8 +25,7 @@ def generate_prompt(path2file, error):
     file_type = ".c"
     driver_name = "rtc"
     
-    file_class = FileProcessor()
-    file_result = file_class.get_file_info(path2file, file_type)
+    file_result = FileProcessor().get_file_info(path2file, file_type)
     if file_result is not None:
         file_content, file_name = file_result
         if file_content is not None and file_name is not None:
@@ -35,7 +34,8 @@ def generate_prompt(path2file, error):
     else:
         raise Exception("Error encountered during reading file content or retrieving filename.")  
       
-    clean_code = file_class.remove_comments(file_content)
+    clean_code = FileProcessor().remove_comments(file_content)
+    
     
     message = f"""
             The Linux kernel runs on a x86_64 machine, where the target {file_name} file belongs to {driver_name} in the Linux kernel.
