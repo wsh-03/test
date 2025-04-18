@@ -1,0 +1,7 @@
+#include "rtc-core.h"
+export BINDGEN_EXTRA_CLANG_ARGS="-Idrivers/rtc"
+
+
+#include <asm/rwonce.h>
+#include <asm-generic/rwonce.h>
+

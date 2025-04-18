@@ -50,9 +50,10 @@ if __name__ == "__main__":
     CodeTranslator().translate(path2folder)
     
     path2driver = os.path.join(linux_path, "drivers", driver_name)
-    # Replace the C code with the translated Rust code, 
+    # Compile the kernel to get object file, and replace the C code with the translated Rust code, 
     # where path2driver is the path to the driver folder in linux
     # and path2folder is the path to the folder containing the translated Rust code.
+    FileProcessor().compile_linux(path2driver, FileProcessor().kernel_compiles)
     FileProcessor().replace_file(path2driver, path2folder, FileProcessor().compilation_error)
     
     # Clean the driver and prepare it to compile Rust code

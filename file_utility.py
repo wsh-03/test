@@ -14,7 +14,7 @@ class FileProcessor:
     helper_file_path = f"{home_dir}/linux/rust/bindings/bindings_helper.h"
     
     # kernel already compiled and prepared for translation so set it to True
-    kernel_compiles = True
+    kernel_compiles = False
     compilation_error = False
     
     # List the full path of a file in the target directory

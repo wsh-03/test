@@ -24,12 +24,16 @@ make LLVM=1 rustavailable
 
 # Step 2: Build the modpost tool and headers
 make LLVM=1 modules_prepare
+make LLVM=1 headers_install
 make LLVM=1 scripts
 
 # Step 3: Build all modules to generate Module.symvers
 # Set the stack size warning limit error as a warning
-make LLVM=1 modules KCFLAGS="-Wno-error=frame-larger-than="
+# make LLVM=1 modules KCFLAGS="-Wno-error=frame-larger-than="
 
 # Step 4: safely rebuild RTC with necessary dependencies
 make LLVM=1 M=drivers/rtc clean
 make LLVM=1 M=drivers/rtc
+
+# compile a single object file e.g. nvmem.rs
+make LLVM=1 drivers/rtc/nvmem.o
